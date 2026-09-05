@@ -22,7 +22,6 @@ const swaggerOptions: swaggerJsdoc.Options = {
       },
     ],
   },
-  // যে যে ফাইলে OpenAPI / JSDoc কমেন্ট লিখবেন সেগুলোর পাথ (Path)
   apis: ["./src/routes/*.ts", "./src/app.ts"], 
 };
 
@@ -45,9 +44,14 @@ app.get("/", (req, res) => {
   res.send("Load shedding Server is running!");
 });
 
-const PORT = 5000;
+// Local Development-এর জন্য listener
+if (process.env.NODE_ENV !== "production") {
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+    console.log(`API Docs available at http://localhost:${PORT}/api-docs`);
+  });
+}
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log(`API Docs available at http://localhost:${PORT}/api-docs`);
-});
+// Vercel-এর জন্য app export করা হলো
+export default app;
