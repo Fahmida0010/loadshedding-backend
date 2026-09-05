@@ -86,9 +86,13 @@ model User {
   email        String     @unique
   phone        String?    @unique
   password     String
+   googleId     String?      @unique
+  authProvider AuthProvider @default(LOCAL)
   profileImage String?
   role         UserRole   @default(CUSTOMER)
   status       UserStatus @default(ACTIVE)
+
+
 
   // Customer's residential area
   areaId String?

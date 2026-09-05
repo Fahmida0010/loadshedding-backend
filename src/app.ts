@@ -6,6 +6,7 @@ const app = express();
 
 app.use(express.json());
 
+
 // Swagger Options Configuration
 const swaggerOptions: swaggerJsdoc.Options = {
   definition: {
@@ -27,6 +28,7 @@ const swaggerOptions: swaggerJsdoc.Options = {
 
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
 
+app.use("/api/v1", router);
 // Swagger UI Route Setup
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
