@@ -1,0 +1,436 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ======================================================
+// ENUMS
+// ======================================================
+
+enum UserRole {
+  ADMIN
+  TECHNICIAN
+  CUSTOMER
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  BLOCKED
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum ScheduleType {
+  LOAD_SHEDDING
+  PLANNED_OUTAGE
+}
+
+enum ScheduleStatus {
+  SCHEDULED
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum OutageStatus {
+  REPORTED
+  CONFIRMED
+  ASSIGNED
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+  CANCELLED
+}
+
+enum AssignmentStatus {
+  ASSIGNED
+  ACCEPTED
+  REJECTED
+  IN_PROGRESS
+  COMPLETED
+}
+
+enum NotificationType {
+  SCHEDULE_CREATED
+  OUTAGE_REPORTED
+  TECHNICIAN_ASSIGNED
+  STATUS_UPDATED
+  POWER_RESTORED
+  GENERAL
+}
+
+enum NotificationChannel {
+  IN_APP
+  EMAIL
+  SMS
+}
+
+// ======================================================
+// USER
+// Roles: ADMIN, TECHNICIAN, CUSTOMER
+// ======================================================
+
+model User {
+  id           String     @id @default(uuid())
+  name         String
+  email        String     @unique
+  phone        String?    @unique
+  password     String
+  profileImage String?
+  role         UserRole   @default(CUSTOMER)
+  status       UserStatus @default(ACTIVE)
+
+  // Customer's residential area
+  areaId String?
+  area   Area?   @relation(fields: [areaId], references: [id], onDelete: SetNull)
+
+  // Optional technician information
+  employeeId      String? @unique
+  skill           String?
+  experienceYears Int?
+
+  createdSchedules      LoadSheddingSchedule[] @relation("ScheduleCreator")
+  reportedOutages       UnexpectedOutage[]     @relation("OutageReporter")
+  technicianAssignments TechnicianAssignment[] @relation("AssignedTechnician")
+  assignedByRecords     TechnicianAssignment[] @relation("AssignedBy")
+  repairUpdates         RepairUpdate[]
+  notifications         Notification[]
+  outageHistoryChanges  OutageHistory[]        @relation("OutageStatusChanger")
+  auditLogs             AuditLog[]
+  refreshTokens         RefreshToken[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@index([role])
+  @@index([status])
+  @@index([areaId])
+  @@map("users")
+}
+
+// ======================================================
+// AUTHENTICATION
+// ======================================================
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  revoked   Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("refresh_tokens")
+}
+
+// ======================================================
+// POWER DISTRIBUTION STRUCTURE
+// Distribution Zone → Substation → Feeder → Area
+// ======================================================
+
+model DistributionZone {
+  id          String  @id @default(uuid())
+  name        String
+  code        String  @unique
+  description String?
+
+  substations Substation[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@unique([name])
+  @@map("distribution_zones")
+}
+
+model Substation {
+  id           String  @id @default(uuid())
+  zoneId       String
+  name         String
+  code         String  @unique
+  location     String?
+  capacityMw   Float?
+  voltageLevel String?
+
+  zone    DistributionZone @relation(fields: [zoneId], references: [id], onDelete: Restrict)
+  feeders Feeder[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@unique([zoneId, name])
+  @@index([zoneId])
+  @@map("substations")
+}
+
+model Feeder {
+  id           String   @id @default(uuid())
+  substationId String
+  name         String
+  code         String   @unique
+  capacityMw   Float?
+  priority     Priority @default(MEDIUM)
+
+  substation Substation @relation(fields: [substationId], references: [id], onDelete: Restrict)
+  areas      Area[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@unique([substationId, name])
+  @@index([substationId])
+  @@map("feeders")
+}
+
+model Area {
+  id         String   @id @default(uuid())
+  feederId   String
+  name       String
+  code       String   @unique
+  location   String?
+  population Int?
+  priority   Priority @default(MEDIUM)
+
+  feeder            Feeder                 @relation(fields: [feederId], references: [id], onDelete: Restrict)
+  users             User[]
+  schedules         LoadSheddingSchedule[]
+  unexpectedOutages UnexpectedOutage[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@unique([feederId, name])
+  @@index([feederId])
+  @@index([priority])
+  @@map("areas")
+}
+
+// ======================================================
+// LOAD-SHEDDING AND PLANNED OUTAGE SCHEDULE
+// ======================================================
+
+model LoadSheddingSchedule {
+  id             String         @id @default(uuid())
+  areaId         String
+  createdById    String
+  title          String
+  description    String?
+  type           ScheduleType   @default(LOAD_SHEDDING)
+  priority       Priority       @default(MEDIUM)
+  scheduledStart DateTime
+  scheduledEnd   DateTime
+  isRecurring    Boolean        @default(false)
+  recurrenceRule String?
+  status         ScheduleStatus @default(SCHEDULED)
+
+  area      Area @relation(fields: [areaId], references: [id], onDelete: Restrict)
+  createdBy User @relation("ScheduleCreator", fields: [createdById], references: [id], onDelete: Restrict)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@index([areaId])
+  @@index([createdById])
+  @@index([scheduledStart, scheduledEnd])
+  @@index([areaId, status])
+  @@map("load_shedding_schedules")
+}
+
+// ======================================================
+// UNEXPECTED OUTAGE
+// ======================================================
+
+model UnexpectedOutage {
+  id                 String       @id @default(uuid())
+  areaId             String
+  reportedById       String
+  title              String
+  description        String?
+  reason             String?
+  priority           Priority     @default(MEDIUM)
+  status             OutageStatus @default(REPORTED)
+  reportedAt         DateTime     @default(now())
+  estimatedRestoreAt DateTime?
+  resolvedAt         DateTime?
+  restoredAt         DateTime?
+
+  area       Area @relation(fields: [areaId], references: [id], onDelete: Restrict)
+  reportedBy User @relation("OutageReporter", fields: [reportedById], references: [id], onDelete: Restrict)
+
+  assignments   TechnicianAssignment[]
+  repairUpdates RepairUpdate[]
+  history       OutageHistory[]
+  resolution    OutageResolution?
+  notifications Notification[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@index([areaId])
+  @@index([reportedById])
+  @@index([status])
+  @@index([priority])
+  @@index([areaId, status])
+  @@index([reportedAt])
+  @@map("unexpected_outages")
+}
+
+// ======================================================
+// TECHNICIAN ASSIGNMENT
+// ======================================================
+model TechnicianAssignment {
+  id           String           @id @default(uuid())
+  outageId     String
+  technicianId String
+  assignedById String
+  status       AssignmentStatus @default(ASSIGNED)
+  notes        String?
+  assignedAt   DateTime         @default(now())
+  acceptedAt   DateTime?
+  startedAt    DateTime?
+  completedAt  DateTime?
+
+  outage     UnexpectedOutage @relation(fields: [outageId], references: [id], onDelete: Cascade)
+  technician User             @relation("AssignedTechnician", fields: [technicianId], references: [id], onDelete: Restrict)
+  assignedBy User             @relation("AssignedBy", fields: [assignedById], references: [id], onDelete: Restrict)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@unique([outageId, technicianId])
+  @@index([outageId])
+  @@index([technicianId, status])
+  @@index([assignedById])
+  @@map("technician_assignments")
+}
+
+// ======================================================
+// REPAIR UPDATE
+// ======================================================
+
+model RepairUpdate {
+  id           String       @id @default(uuid())
+  outageId     String
+  technicianId String
+  status       OutageStatus
+  note         String
+  createdAt    DateTime     @default(now())
+
+  outage     UnexpectedOutage @relation(fields: [outageId], references: [id], onDelete: Cascade)
+  technician User             @relation(fields: [technicianId], references: [id], onDelete: Restrict)
+
+  @@index([outageId, createdAt])
+  @@index([technicianId])
+  @@map("repair_updates")
+}
+
+// ======================================================
+// OUTAGE HISTORY
+// ======================================================
+model OutageHistory {
+  id             String        @id @default(uuid())
+  outageId       String
+  changedById    String
+  previousStatus OutageStatus?
+  currentStatus  OutageStatus
+  notes          String?
+  changedAt      DateTime      @default(now())
+
+  outage    UnexpectedOutage @relation(fields: [outageId], references: [id], onDelete: Cascade)
+  changedBy User             @relation("OutageStatusChanger", fields: [changedById], references: [id], onDelete: Restrict)
+
+  @@index([outageId, changedAt])
+  @@index([changedById])
+  @@map("outage_history")
+}
+
+// ======================================================
+// OUTAGE RESOLUTION
+// ======================================================
+
+model OutageResolution {
+  id              String   @id @default(uuid())
+  outageId        String   @unique
+  description     String
+  actionTaken     String?
+  durationMinutes Int?
+  restoredAt      DateTime
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  outage UnexpectedOutage @relation(fields: [outageId], references: [id], onDelete: Cascade)
+
+  @@map("outage_resolutions")
+}
+
+// ======================================================
+// NOTIFICATION
+// ======================================================
+
+model Notification {
+  id        String              @id @default(uuid())
+  userId    String
+  outageId  String?
+  type      NotificationType
+  channel   NotificationChannel @default(IN_APP)
+  title     String
+  message   String
+  isRead    Boolean             @default(false)
+  sentAt    DateTime?
+  readAt    DateTime?
+  createdAt DateTime            @default(now())
+
+  user   User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  outage UnexpectedOutage? @relation(fields: [outageId], references: [id], onDelete: SetNull)
+
+  @@index([userId, isRead])
+  @@index([outageId])
+  @@index([createdAt])
+  @@map("notifications")
+}
+
+// ======================================================
+// AUDIT LOG
+// ======================================================
+
+model AuditLog {
+  id         String   @id @default(uuid())
+  userId     String?
+  action     String
+  entityType String
+  entityId   String?
+  oldValues  Json?
+  newValues  Json?
+  ipAddress  String?
+  userAgent  String?
+  createdAt  DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([entityType, entityId])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
