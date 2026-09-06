@@ -1,40 +1,33 @@
-import { auth } from "../../middlewares/auth.js";
-import { validateRequest } from "../../middlewares/validateRequest.js";
-import authController = require("./auth.controller.js");
-import e = require("express");
-import authValidation = require("./auth.validation.js");
-import AuthController = require("./auth.controller.js");
+import { Router } from "express";
 
+import { auth } from "../../middlewares/auth";
+import { validateRequest } from "../../middlewares/validateRequest";
+import { AuthController } from "./auth.controller";
+import { AuthValidation } from "./auth.validation";
 
-const router = e.Router();
+const router = Router();
 
 router.post(
   "/register",
-  validateRequest(
-    authValidation.AuthValidation.registerUserValidationSchema,
-  ),
-  authController.AuthController.registerUser,
+  validateRequest(AuthValidation.registerUserValidationSchema),
+  AuthController.registerUser,
 );
 
 router.post(
   "/login",
-  validateRequest(authValidation.AuthValidation.loginUserValidationSchema),
-  authController.AuthController.loginUser,
+  validateRequest(AuthValidation.loginUserValidationSchema),
+  AuthController.loginUser,
 );
 
 router.post(
   "/google",
-  validateRequest(
-    AuthValidation.googleLoginValidationSchema,
-  ),
+  validateRequest(AuthValidation.googleLoginValidationSchema),
   AuthController.loginWithGoogle,
 );
 
 router.post(
   "/refresh-token",
-  validateRequest(
-    AuthValidation.refreshTokenValidationSchema,
-  ),
+  validateRequest(AuthValidation.refreshTokenValidationSchema),
   AuthController.refreshAccessToken,
 );
 
@@ -46,24 +39,14 @@ router.post(
 
 router.get(
   "/me",
-  auth(
-    "ADMIN",
-    "TECHNICIAN",
-    "CUSTOMER",
-  ),
+  auth("ADMIN", "TECHNICIAN", "CUSTOMER"),
   AuthController.getCurrentUser,
 );
 
 router.patch(
   "/change-password",
-  auth(
-    "ADMIN",
-    "TECHNICIAN",
-    "CUSTOMER",
-  ),
-  validateRequest(
-    AuthValidation.changePasswordValidationSchema,
-  ),
+  auth("ADMIN", "TECHNICIAN", "CUSTOMER"),
+  validateRequest(AuthValidation.changePasswordValidationSchema),
   AuthController.changePassword,
 );
 

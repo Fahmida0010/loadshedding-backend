@@ -1,9 +1,8 @@
 import type { ErrorRequestHandler } from "express";
 import jwt from "jsonwebtoken";
 import { ZodError } from "zod";
-import { Prisma } from "../../generated/prisma/client.js";
-import { AppError } from "../errors/AppError.js";
 import config = require("prisma/config");
+import { AppError } from "../utils/AppError";
 
 type TErrorResponse = {
   statusCode: number;

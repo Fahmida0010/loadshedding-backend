@@ -1,18 +1,25 @@
 import type { Request, Response } from "express";
-import { env } from "../../config/env.js";
-import { AppError } from "../../errors/AppError.js";
-import { catchAsync } from "../../utils/catchAsync.js";
-import { sendResponse } from "../../utils/sendResponse.js";
-import { AuthService } from "./auth.service.js";
+
+import { AppError } from "../../errors/AppError";
+import { sendResponse } from "../../utils/sendResponse";
+import { AuthService } from "./auth.service";
+import { catchAsync } from "../../utils/catchAsyc";
 
 const refreshCookieOptions = {
   httpOnly: true,
-  secure: env.NODE_ENV === "production",
-  sameSite:
-    env.NODE_ENV === "production"
-      ? ("none" as const)
-      : ("lax" as const),
-  maxAge: env.REFRESH_TOKEN_COOKIE_DAYS * 24 * 60 * 60 * 1000,
+  secure: process.env.NODE_ENV === "production",
+  sameSite: process.env.NODE_ENV === "production"
+    ? ("none" as const)
+    : ("lax" as const),
+
+  // Environment variable string হওয়ায় Number() ব্যবহার করতে হবে
+  maxAge:
+    Number(process.env.REFRESH_TOKEN_COOKIE_DAYS || 7) *
+    24 *
+    60 *
+    60 *
+    1000,
+
   path: "/api/v1/auth",
 };
 
@@ -124,11 +131,10 @@ const logoutUser = catchAsync(
 
     res.clearCookie("refreshToken", {
       httpOnly: true,
-      secure: env.NODE_ENV === "production",
-      sameSite:
-        env.NODE_ENV === "production"
-          ? ("none" as const)
-          : ("lax" as const),
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production"
+        ? ("none" as const)
+        : ("lax" as const),
       path: "/api/v1/auth",
     });
 
@@ -173,11 +179,10 @@ const changePassword = catchAsync(
 
     res.clearCookie("refreshToken", {
       httpOnly: true,
-      secure: env.NODE_ENV === "production",
-      sameSite:
-        env.NODE_ENV === "production"
-          ? ("none" as const)
-          : ("lax" as const),
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production"
+        ? ("none" as const)
+        : ("lax" as const),
       path: "/api/v1/auth",
     });
 
