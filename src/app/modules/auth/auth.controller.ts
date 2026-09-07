@@ -1,9 +1,8 @@
 import type { Request, Response } from "express";
-
-import { AppError } from "../../errors/AppError";
 import { sendResponse } from "../../utils/sendResponse";
 import { AuthService } from "./auth.service";
 import { catchAsync } from "../../utils/catchAsyc";
+import { AppError } from "../../utils/AppError";
 
 const refreshCookieOptions = {
   httpOnly: true,

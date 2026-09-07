@@ -1,10 +1,9 @@
 import type { RequestHandler } from "express";
 import jwt from "jsonwebtoken";
-import { UserRole } from "../../generated/prisma/enums";
-import { AppError } from "../utils/AppError";
-import { IJwtPayload } from "../modules/auth/auth.interface";
-import { redis } from "../config/redis";
+import type { UserRole } from "../../generated/prisma/enums";
+import type { IJwtPayload } from "../modules/auth/auth.interface";
 import { prisma } from "../config/prisma";
+import { AppError } from "../utils/AppError";
 
 export const auth = (
   ...requiredRoles: UserRole[]
@@ -29,12 +28,19 @@ export const auth = (
         throw new AppError(401, "Access token is required");
       }
 
+      if (!process.env.JWT_ACCESS_SECRET) {
+        throw new AppError(
+          500,
+          "JWT access secret is not configured",
+        );
+      }
+
       let decodedToken: IJwtPayload;
 
       try {
         decodedToken = jwt.verify(
           accessToken,
-          env.JWT_ACCESS_SECRET,
+          process.env.JWT_ACCESS_SECRET,
         ) as IJwtPayload;
       } catch {
         throw new AppError(
@@ -43,59 +49,18 @@ export const auth = (
         );
       }
 
-      let user: {
-        id: string;
-        email: string;
-        role: UserRole;
-        status: string;
-        deletedAt: Date | null;
-      } | null = null;
-
-      /*
-       * প্রথমে Redis cache থেকে user খোঁজা হবে।
-       */
-      try {
-        const cachedUser = await redis.get(
-          `auth:user:${decodedToken.userId}`,
-        );
-
-        if (cachedUser) {
-          user = JSON.parse(cachedUser);
-        }
-      } catch (error) {
-        console.error("Redis cache read error:", error);
-      }
-
-      /*
-       * Redis-এ না পাওয়া গেলে database থেকে নেওয়া হবে।
-       */
-      if (!user) {
-        user = await prisma.user.findUnique({
-          where: {
-            id: decodedToken.userId,
-          },
-          select: {
-            id: true,
-            email: true,
-            role: true,
-            status: true,
-            deletedAt: true,
-          },
-        });
-
-        if (user) {
-          try {
-            await redis.set(
-              `auth:user:${user.id}`,
-              JSON.stringify(user),
-              "EX",
-              300,
-            );
-          } catch (error) {
-            console.error("Redis cache write error:", error);
-          }
-        }
-      }
+      const user = await prisma.user.findUnique({
+        where: {
+          id: decodedToken.userId,
+        },
+        select: {
+          id: true,
+          email: true,
+          role: true,
+          status: true,
+          deletedAt: true,
+        },
+      });
 
       if (!user || user.deletedAt) {
         throw new AppError(401, "User account not found");
@@ -115,9 +80,6 @@ export const auth = (
         );
       }
 
-      /*
-       * Token-এর data এবং database-এর data মিলিয়ে দেখা হচ্ছে।
-       */
       if (
         user.email !== decodedToken.email ||
         user.role !== decodedToken.role

@@ -4,9 +4,9 @@ import express from "express";
 import helmet from "helmet";
 import swaggerJsdoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
-import routes = require("./app/routes");
 import { globalErrorHandler } from "./app/middlewares/globalErrorhandler";
 import { notFound } from "./app/middlewares/notFound";
+import routes from "./app/routes";
 
 const app = express();
 
@@ -88,7 +88,7 @@ app.get("/", (_req, res) => {
   });
 });
 
-app.use("/api/v1", routes.router);
+app.use("/api/v1", routes);
 
 
 app.use(notFound);

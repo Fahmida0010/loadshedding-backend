@@ -1,11 +1,10 @@
 import crypto from "node:crypto";
 import bcrypt from "bcryptjs";
 import { OAuth2Client } from "google-auth-library";
-import jwt from "jsonwebtoken";
-import { env } from "../../config/env.js";
-import { prisma } from "../../config/prisma.js";
-import { redis } from "../../config/redis.js";
-import { AppError } from "../../errors/AppError.js";
+import jwt, { type SignOptions } from "jsonwebtoken";
+
+import { prisma } from "../../config/prisma";
+import { AppError } from "../../utils/AppError";
 import type {
   IChangePassword,
   IGoogleLogin,
@@ -13,9 +12,39 @@ import type {
   ILoginUser,
   IRefreshTokenPayload,
   IRegisterUser,
-} from "./auth.interface.js";
+} from "./auth.interface";
 
-const googleClient = new OAuth2Client(env.GOOGLE_CLIENT_ID);
+const getRequiredEnv = (name: string): string => {
+  const value = process.env[name];
+
+  if (!value) {
+    throw new Error(`${name} is missing from the .env file`);
+  }
+
+  return value;
+};
+
+const JWT_ACCESS_SECRET = getRequiredEnv(
+  "JWT_ACCESS_SECRET",
+);
+
+const JWT_REFRESH_SECRET = getRequiredEnv(
+  "JWT_REFRESH_SECRET",
+);
+
+const GOOGLE_CLIENT_ID = getRequiredEnv(
+  "GOOGLE_CLIENT_ID",
+);
+
+const JWT_ACCESS_EXPIRES_IN = (
+  process.env.JWT_ACCESS_EXPIRES_IN ?? "15m"
+) as SignOptions["expiresIn"];
+
+const JWT_REFRESH_EXPIRES_IN = (
+  process.env.JWT_REFRESH_EXPIRES_IN ?? "30d"
+) as SignOptions["expiresIn"];
+
+const googleClient = new OAuth2Client(GOOGLE_CLIENT_ID);
 
 const userSelect = {
   id: true,
@@ -32,12 +61,17 @@ const userSelect = {
 } as const;
 
 const hashToken = (token: string): string => {
-  return crypto.createHash("sha256").update(token).digest("hex");
+  return crypto
+    .createHash("sha256")
+    .update(token)
+    .digest("hex");
 };
 
-const generateAccessToken = (payload: IJwtPayload): string => {
-  return jwt.sign(payload, env.JWT_ACCESS_SECRET, {
-    expiresIn: env.JWT_ACCESS_EXPIRES_IN,
+const generateAccessToken = (
+  payload: IJwtPayload,
+): string => {
+  return jwt.sign(payload, JWT_ACCESS_SECRET, {
+    expiresIn: JWT_ACCESS_EXPIRES_IN,
   });
 };
 
@@ -51,8 +85,8 @@ const generateRefreshToken = (
     type: "refresh",
   };
 
-  return jwt.sign(payload, env.JWT_REFRESH_SECRET, {
-    expiresIn: env.JWT_REFRESH_EXPIRES_IN,
+  return jwt.sign(payload, JWT_REFRESH_SECRET, {
+    expiresIn: JWT_REFRESH_EXPIRES_IN,
   });
 };
 
@@ -62,14 +96,19 @@ const verifyRefreshToken = (
   try {
     return jwt.verify(
       token,
-      env.JWT_REFRESH_SECRET,
+      JWT_REFRESH_SECRET,
     ) as IRefreshTokenPayload;
   } catch {
-    throw new AppError(401, "Invalid or expired refresh token");
+    throw new AppError(
+      401,
+      "Invalid or expired refresh token",
+    );
   }
 };
 
-const getTokenExpirationDate = (token: string): Date => {
+const getTokenExpirationDate = (
+  token: string,
+): Date => {
   const decodedToken = jwt.decode(token);
 
   if (
@@ -77,34 +116,13 @@ const getTokenExpirationDate = (token: string): Date => {
     typeof decodedToken === "string" ||
     !decodedToken.exp
   ) {
-    throw new AppError(500, "Could not determine token expiration");
+    throw new AppError(
+      500,
+      "Could not determine token expiration",
+    );
   }
 
   return new Date(decodedToken.exp * 1000);
-};
-
-const cacheUser = async (user: {
-  id: string;
-  [key: string]: unknown;
-}): Promise<void> => {
-  try {
-    await redis.set(
-      `auth:user:${user.id}`,
-      JSON.stringify(user),
-      "EX",
-      300,
-    );
-  } catch (error) {
-    console.error("Redis user cache error:", error);
-  }
-};
-
-const removeCachedUser = async (userId: string): Promise<void> => {
-  try {
-    await redis.del(`auth:user:${userId}`);
-  } catch (error) {
-    console.error("Redis cache deletion error:", error);
-  }
 };
 
 const createAuthTokens = async (user: {
@@ -120,16 +138,19 @@ const createAuthTokens = async (user: {
 
   const tokenId = crypto.randomUUID();
 
-  const accessToken = generateAccessToken(accessTokenPayload);
-  const refreshToken = generateRefreshToken(user.id, tokenId);
+  const accessToken = generateAccessToken(
+    accessTokenPayload,
+  );
+
+  const refreshToken = generateRefreshToken(
+    user.id,
+    tokenId,
+  );
 
   await prisma.refreshToken.create({
     data: {
       userId: user.id,
-
-      // Database-এ raw refresh token রাখা হচ্ছে না।
       token: hashToken(refreshToken),
-
       expiresAt: getTokenExpirationDate(refreshToken),
     },
   });
@@ -140,7 +161,9 @@ const createAuthTokens = async (user: {
   };
 };
 
-const registerUser = async (payload: IRegisterUser) => {
+const registerUser = async (
+  payload: IRegisterUser,
+) => {
   const email = payload.email.toLowerCase();
 
   const existingUser = await prisma.user.findUnique({
@@ -150,7 +173,10 @@ const registerUser = async (payload: IRegisterUser) => {
   });
 
   if (existingUser) {
-    throw new AppError(409, "An account already exists with this email");
+    throw new AppError(
+      409,
+      "An account already exists with this email",
+    );
   }
 
   if (payload.phone) {
@@ -184,7 +210,10 @@ const registerUser = async (payload: IRegisterUser) => {
     }
   }
 
-  const hashedPassword = await bcrypt.hash(payload.password, 12);
+  const hashedPassword = await bcrypt.hash(
+    payload.password,
+    12,
+  );
 
   const user = await prisma.user.create({
     data: {
@@ -199,8 +228,6 @@ const registerUser = async (payload: IRegisterUser) => {
     select: userSelect,
   });
 
-  await cacheUser(user);
-
   const tokens = await createAuthTokens(user);
 
   return {
@@ -209,7 +236,9 @@ const registerUser = async (payload: IRegisterUser) => {
   };
 };
 
-const loginUser = async (payload: ILoginUser) => {
+const loginUser = async (
+  payload: ILoginUser,
+) => {
   const email = payload.email.toLowerCase();
 
   const userAccount = await prisma.user.findUnique({
@@ -219,7 +248,10 @@ const loginUser = async (payload: ILoginUser) => {
   });
 
   if (!userAccount?.password) {
-    throw new AppError(401, "Invalid email or password");
+    throw new AppError(
+      401,
+      "Invalid email or password",
+    );
   }
 
   const isPasswordMatched = await bcrypt.compare(
@@ -228,19 +260,31 @@ const loginUser = async (payload: ILoginUser) => {
   );
 
   if (!isPasswordMatched) {
-    throw new AppError(401, "Invalid email or password");
+    throw new AppError(
+      401,
+      "Invalid email or password",
+    );
   }
 
   if (userAccount.status === "BLOCKED") {
-    throw new AppError(403, "Your account has been blocked");
+    throw new AppError(
+      403,
+      "Your account has been blocked",
+    );
   }
 
   if (userAccount.status === "INACTIVE") {
-    throw new AppError(403, "Your account is inactive");
+    throw new AppError(
+      403,
+      "Your account is inactive",
+    );
   }
 
   if (userAccount.deletedAt) {
-    throw new AppError(403, "Your account is unavailable");
+    throw new AppError(
+      403,
+      "Your account is unavailable",
+    );
   }
 
   const user = await prisma.user.findUniqueOrThrow({
@@ -250,8 +294,6 @@ const loginUser = async (payload: ILoginUser) => {
     select: userSelect,
   });
 
-  await cacheUser(user);
-
   const tokens = await createAuthTokens(user);
 
   return {
@@ -260,18 +302,23 @@ const loginUser = async (payload: ILoginUser) => {
   };
 };
 
-const loginWithGoogle = async (payload: IGoogleLogin) => {
+const loginWithGoogle = async (
+  payload: IGoogleLogin,
+) => {
   let googlePayload;
 
   try {
     const ticket = await googleClient.verifyIdToken({
       idToken: payload.idToken,
-      audience: env.GOOGLE_CLIENT_ID,
+      audience: GOOGLE_CLIENT_ID,
     });
 
     googlePayload = ticket.getPayload();
   } catch {
-    throw new AppError(401, "Invalid Google ID token");
+    throw new AppError(
+      401,
+      "Invalid Google ID token",
+    );
   }
 
   if (
@@ -279,22 +326,49 @@ const loginWithGoogle = async (payload: IGoogleLogin) => {
     !googlePayload.email ||
     !googlePayload.email_verified
   ) {
-    throw new AppError(401, "Google email could not be verified");
+    throw new AppError(
+      401,
+      "Google email could not be verified",
+    );
   }
 
   const email = googlePayload.email.toLowerCase();
 
-  let user = await prisma.user.findUnique({
+  const existingUser = await prisma.user.findUnique({
     where: {
       email,
     },
-    select: userSelect,
   });
 
-  if (!user) {
+  if (existingUser?.deletedAt) {
+    throw new AppError(
+      403,
+      "Your account is unavailable",
+    );
+  }
+
+  if (existingUser?.status === "BLOCKED") {
+    throw new AppError(
+      403,
+      "Your account has been blocked",
+    );
+  }
+
+  if (existingUser?.status === "INACTIVE") {
+    throw new AppError(
+      403,
+      "Your account is inactive",
+    );
+  }
+
+  let user;
+
+  if (!existingUser) {
     user = await prisma.user.create({
       data: {
-        name: googlePayload.name ?? email.split("@")[0],
+        name:
+          googlePayload.name ??
+          email.split("@")[0],
         email,
         password: null,
         googleId: googlePayload.sub,
@@ -305,28 +379,19 @@ const loginWithGoogle = async (payload: IGoogleLogin) => {
       select: userSelect,
     });
   } else {
-    if (user.status === "BLOCKED") {
-      throw new AppError(403, "Your account has been blocked");
-    }
-
-    if (user.status === "INACTIVE") {
-      throw new AppError(403, "Your account is inactive");
-    }
-
     user = await prisma.user.update({
       where: {
-        id: user.id,
+        id: existingUser.id,
       },
       data: {
         googleId: googlePayload.sub,
         profileImage:
-          user.profileImage ?? googlePayload.picture,
+          existingUser.profileImage ??
+          googlePayload.picture,
       },
       select: userSelect,
     });
   }
-
-  await cacheUser(user);
 
   const tokens = await createAuthTokens(user);
 
@@ -336,46 +401,65 @@ const loginWithGoogle = async (payload: IGoogleLogin) => {
   };
 };
 
-const refreshAccessToken = async (rawRefreshToken: string) => {
-  const decodedToken = verifyRefreshToken(rawRefreshToken);
+const refreshAccessToken = async (
+  rawRefreshToken: string,
+) => {
+  const decodedToken = verifyRefreshToken(
+    rawRefreshToken,
+  );
 
   if (decodedToken.type !== "refresh") {
-    throw new AppError(401, "Invalid refresh token");
+    throw new AppError(
+      401,
+      "Invalid refresh token",
+    );
   }
 
-  const storedToken = await prisma.refreshToken.findUnique({
-    where: {
-      token: hashToken(rawRefreshToken),
-    },
-    include: {
-      user: true,
-    },
-  });
+  const storedToken =
+    await prisma.refreshToken.findUnique({
+      where: {
+        token: hashToken(rawRefreshToken),
+      },
+      include: {
+        user: true,
+      },
+    });
 
   if (!storedToken) {
-    throw new AppError(401, "Refresh token was not found");
+    throw new AppError(
+      401,
+      "Refresh token was not found",
+    );
   }
 
   if (storedToken.revoked) {
-    throw new AppError(401, "Refresh token has already been used");
+    throw new AppError(
+      401,
+      "Refresh token has already been used",
+    );
   }
 
   if (storedToken.expiresAt <= new Date()) {
-    throw new AppError(401, "Refresh token has expired");
+    throw new AppError(
+      401,
+      "Refresh token has expired",
+    );
   }
 
   if (storedToken.user.status !== "ACTIVE") {
-    throw new AppError(403, "User account is unavailable");
+    throw new AppError(
+      403,
+      "User account is unavailable",
+    );
   }
 
   if (storedToken.user.deletedAt) {
-    throw new AppError(403, "User account has been deleted");
+    throw new AppError(
+      403,
+      "User account has been deleted",
+    );
   }
 
-  /*
-   * পুরোনো refresh token revoke করে নতুন token তৈরি করা হচ্ছে।
-   * এটিই refresh-token rotation।
-   */
   await prisma.refreshToken.update({
     where: {
       id: storedToken.id,
@@ -412,17 +496,9 @@ const logoutUser = async (
   });
 };
 
-const getCurrentUser = async (userId: string) => {
-  try {
-    const cachedUser = await redis.get(`auth:user:${userId}`);
-
-    if (cachedUser) {
-      return JSON.parse(cachedUser);
-    }
-  } catch (error) {
-    console.error("Redis cache read error:", error);
-  }
-
+const getCurrentUser = async (
+  userId: string,
+) => {
   const user = await prisma.user.findFirst({
     where: {
       id: userId,
@@ -432,10 +508,11 @@ const getCurrentUser = async (userId: string) => {
   });
 
   if (!user) {
-    throw new AppError(404, "User not found");
+    throw new AppError(
+      404,
+      "User not found",
+    );
   }
-
-  await cacheUser(user);
 
   return user;
 };
@@ -452,7 +529,10 @@ const changePassword = async (
   });
 
   if (!user) {
-    throw new AppError(404, "User not found");
+    throw new AppError(
+      404,
+      "User not found",
+    );
   }
 
   if (!user.password) {
@@ -462,13 +542,17 @@ const changePassword = async (
     );
   }
 
-  const isCurrentPasswordMatched = await bcrypt.compare(
-    payload.currentPassword,
-    user.password,
-  );
+  const isCurrentPasswordMatched =
+    await bcrypt.compare(
+      payload.currentPassword,
+      user.password,
+    );
 
   if (!isCurrentPasswordMatched) {
-    throw new AppError(401, "Current password is incorrect");
+    throw new AppError(
+      401,
+      "Current password is incorrect",
+    );
   }
 
   const isSamePassword = await bcrypt.compare(
@@ -499,10 +583,6 @@ const changePassword = async (
       },
     }),
 
-    /*
-     * Password পরিবর্তনের পর user-এর সব login session
-     * revoke করা হচ্ছে।
-     */
     prisma.refreshToken.updateMany({
       where: {
         userId,
@@ -513,8 +593,6 @@ const changePassword = async (
       },
     }),
   ]);
-
-  await removeCachedUser(userId);
 };
 
 export const AuthService = {
