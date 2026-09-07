@@ -1,11 +1,10 @@
 import type { RequestHandler } from "express";
 import jwt from "jsonwebtoken";
-import type { UserRole } from "../../generated/prisma/enums.js";
-import { env } from "../config/env.js";
-import { prisma } from "../config/prisma.js";
-import { redis } from "../config/redis.js";
-import { AppError } from "../errors/AppError.js";
-import type { IJwtPayload } from "../modules/auth/auth.interface.js";
+import { UserRole } from "../../generated/prisma/enums";
+import { AppError } from "../utils/AppError";
+import { IJwtPayload } from "../modules/auth/auth.interface";
+import { redis } from "../config/redis";
+import { prisma } from "../config/prisma";
 
 export const auth = (
   ...requiredRoles: UserRole[]
@@ -129,9 +128,6 @@ export const auth = (
         );
       }
 
-      /*
-       * Route-এ role দেওয়া থাকলে role check করা হবে।
-       */
       if (
         requiredRoles.length > 0 &&
         !requiredRoles.includes(user.role)
