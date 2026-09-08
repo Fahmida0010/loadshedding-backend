@@ -4,22 +4,20 @@ import { AuthService } from "./auth.service";
 import { catchAsync } from "../../utils/catchAsyc";
 import { AppError } from "../../utils/AppError";
 
+
 const refreshCookieOptions = {
   httpOnly: true,
-  secure: process.env.NODE_ENV === "production",
-  sameSite: process.env.NODE_ENV === "production"
-    ? ("none" as const)
-    : ("lax" as const),
-
-  // Environment variable string হওয়ায় Number() ব্যবহার করতে হবে
+  secure: false,
+  sameSite: "lax" as const,
   maxAge:
-    Number(process.env.REFRESH_TOKEN_COOKIE_DAYS || 7) *
+    Number(
+      process.env.REFRESH_TOKEN_COOKIE_DAYS || 7,
+    ) *
     24 *
     60 *
     60 *
     1000,
-
-  path: "/api/v1/auth",
+  path: "/",
 };
 
 const getRefreshTokenFromRequest = (
@@ -128,15 +126,12 @@ const logoutUser = catchAsync(
 
     await AuthService.logoutUser(refreshToken);
 
-    res.clearCookie("refreshToken", {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production"
-        ? ("none" as const)
-        : ("lax" as const),
-      path: "/api/v1/auth",
-    });
-
+  res.clearCookie("refreshToken", {
+  httpOnly: true,
+  secure: false,
+  sameSite: "lax",
+  path: "/",
+});
     sendResponse(res, {
       statusCode: 200,
       success: true,
@@ -165,6 +160,31 @@ const getCurrentUser = catchAsync(
   },
 );
 
+
+const updateProfile = catchAsync(
+  async (req: Request, res: Response) => {
+    if (!req.user) {
+      throw new AppError(
+        401,
+        "Authentication is required",
+      );
+    }
+
+    const result =
+      await AuthService.updateProfile(
+        req.user.userId,
+        req.body,
+      );
+
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: "Profile updated successfully",
+      data: result,
+    });
+  },
+);
+
 const changePassword = catchAsync(
   async (req: Request, res: Response) => {
     if (!req.user) {
@@ -176,14 +196,12 @@ const changePassword = catchAsync(
       req.body,
     );
 
-    res.clearCookie("refreshToken", {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production"
-        ? ("none" as const)
-        : ("lax" as const),
-      path: "/api/v1/auth",
-    });
+  res.clearCookie("refreshToken", {
+  httpOnly: true,
+  secure: false,
+  sameSite: "lax",
+  path: "/",
+});
 
     sendResponse(res, {
       statusCode: 200,
@@ -202,5 +220,6 @@ export const AuthController = {
   refreshAccessToken,
   logoutUser,
   getCurrentUser,
+  updateProfile,
   changePassword,
 };

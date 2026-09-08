@@ -75,6 +75,47 @@ const logoutValidationSchema = z.object({
     .optional(),
 });
 
+const updateProfileValidationSchema = z.object({
+  body: z
+    .object({
+      name: z
+        .string()
+        .trim()
+        .min(2, "Name must contain at least 2 characters")
+        .optional(),
+
+      phone: z
+        .string()
+        .trim()
+        .min(10, "Invalid phone number")
+        .max(15, "Invalid phone number")
+        .nullable()
+        .optional(),
+
+      profileImage: z
+        .string()
+        .url("Profile image must be a valid URL")
+        .nullable()
+        .optional(),
+
+      areaId: z
+        .string()
+        .uuid("Invalid area ID")
+        .nullable()
+        .optional(),
+    })
+    .refine(
+      (data) =>
+        Object.values(data).some(
+          (value) => value !== undefined,
+        ),
+      {
+        message:
+          "At least one profile field is required",
+      },
+    ),
+});
+
 const changePasswordValidationSchema = z.object({
   body: z
     .object({
@@ -96,5 +137,6 @@ export const AuthValidation = {
   googleLoginValidationSchema,
   refreshTokenValidationSchema,
   logoutValidationSchema,
+  updateProfileValidationSchema,
   changePasswordValidationSchema,
 };

@@ -12,6 +12,7 @@ import type {
   ILoginUser,
   IRefreshTokenPayload,
   IRegisterUser,
+  IUpdateProfile,
 } from "./auth.interface";
 
 const getRequiredEnv = (name: string): string => {
@@ -517,6 +518,56 @@ const getCurrentUser = async (
   return user;
 };
 
+const updateProfile = async (
+  userId: string,
+  payload: IUpdateProfile,
+) => {
+  const existingUser = await prisma.user.findFirst({
+    where: {
+      id: userId,
+      deletedAt: null,
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  if (!existingUser) {
+    throw new AppError(404, "User not found");
+  }
+
+  if (payload.areaId) {
+    const area = await prisma.area.findFirst({
+      where: {
+        id: payload.areaId,
+        deletedAt: null,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!area) {
+      throw new AppError(404, "Area not found");
+    }
+  }
+
+  const updatedUser = await prisma.user.update({
+    where: {
+      id: userId,
+    },
+    data: {
+      name: payload.name,
+      phone: payload.phone,
+      profileImage: payload.profileImage,
+      areaId: payload.areaId,
+    },
+    select: userSelect,
+  });
+
+  return updatedUser;
+};
+
 const changePassword = async (
   userId: string,
   payload: IChangePassword,
@@ -602,5 +653,6 @@ export const AuthService = {
   refreshAccessToken,
   logoutUser,
   getCurrentUser,
+  updateProfile,
   changePassword,
 };

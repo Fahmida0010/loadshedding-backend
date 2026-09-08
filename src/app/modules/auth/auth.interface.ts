@@ -19,6 +19,13 @@ export interface IGoogleLogin {
   idToken: string;
 }
 
+export interface IUpdateProfile {
+  name?: string;
+  phone?: string | null;
+  profileImage?: string | null;
+  areaId?: string | null;
+}
+
 export interface IChangePassword {
   currentPassword: string;
   newPassword: string;
