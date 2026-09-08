@@ -8,6 +8,7 @@ import swaggerUi from "swagger-ui-express";
 import { globalErrorHandler } from "./app/middlewares/globalErrorhandler";
 import { notFound } from "./app/middlewares/notFound";
 import routes from "./app/routes";
+import { DistributionZoneRoutes } from "./app/modules/distributionZone/distributionZone.route";
 
 const app = express();
 
@@ -97,18 +98,18 @@ app.get("/", (_req, res) => {
 
 app.use("/api/v1", routes);
 
-// এগুলো সব routes-এর পরে থাকবে
+app.use(
+  "/distribution-zones",
+  DistributionZoneRoutes,
+);
+
+
 app.use(notFound);
 app.use(globalErrorHandler);
 
 app.listen(PORT, () => {
-  console.log(
-    `Server is running on http://localhost:${PORT}`,
-  );
-
-  console.log(
-    `Swagger documentation: http://localhost:${PORT}/api-docs`,
-  );
+  console.log(`Server is running on ${process.env.BACKEND_URL}`);
+  console.log(`Swagger documentation: ${process.env.BACKEND_URL}/api-docs`);
 });
 
 export default app;
