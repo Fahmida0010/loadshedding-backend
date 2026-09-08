@@ -1,9 +1,13 @@
+import { UserRole } from "../../../generated/prisma/enums";
+
+
 export interface IRegisterUser {
   name: string;
   email: string;
   password: string;
   phone?: string;
   areaId?: string;
+   role?: UserRole;
 }
 
 export interface ILoginUser {
@@ -27,7 +31,7 @@ export interface IRefreshToken {
 export interface IJwtPayload {
   userId: string;
   email: string;
-  role: "ADMIN" | "TECHNICIAN" | "CUSTOMER";
+  role: UserRole;
 }
 
 export interface IRefreshTokenPayload {

@@ -222,7 +222,7 @@ const registerUser = async (
       password: hashedPassword,
       phone: payload.phone,
       areaId: payload.areaId,
-      role: "CUSTOMER",
+     role: payload.role ?? "CUSTOMER",
       authProvider: "LOCAL",
     },
     select: userSelect,

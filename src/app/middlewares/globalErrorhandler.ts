@@ -1,16 +1,34 @@
 import type { ErrorRequestHandler } from "express";
-import jwt from "jsonwebtoken";
 import { ZodError } from "zod";
-import config = require("prisma/config");
 import { AppError } from "../utils/AppError";
+
+type TErrorSource = {
+  path: string;
+  message: string;
+};
 
 type TErrorResponse = {
   statusCode: number;
   message: string;
-  errorSources?: {
-    path: string;
-    message: string;
-  }[];
+  errorSources?: TErrorSource[];
+};
+
+type TPrismaError = Error & {
+  code?: string;
+  meta?: {
+    target?: string | string[];
+    field_name?: string;
+  };
+};
+
+const isPrismaError = (
+  error: unknown,
+): error is TPrismaError => {
+  return (
+    error instanceof Error &&
+    "code" in error &&
+    typeof (error as TPrismaError).code === "string"
+  );
 };
 
 export const globalErrorHandler: ErrorRequestHandler = (
@@ -49,54 +67,46 @@ export const globalErrorHandler: ErrorRequestHandler = (
   }
 
   /*
-   * Prisma unique constraint error
-   * Example: একই email বা phone দ্বিতীয়বার ব্যবহার করা।
+   * Prisma errors
    */
-  else if (
-    error instanceof Prisma.PrismaClientKnownRequestError &&
-    error.code === "P2002"
-  ) {
-    const fields = Array.isArray(error.meta?.target)
-      ? error.meta.target.join(", ")
-      : "Unique field";
+  else if (isPrismaError(error)) {
+    if (error.code === "P2002") {
+      const target = error.meta?.target;
 
-    errorResponse = {
-      statusCode: 409,
-      message: `${fields} already exists`,
-    };
-  }
+      const fields = Array.isArray(target)
+        ? target.join(", ")
+        : typeof target === "string"
+          ? target
+          : "Email or phone";
 
-  /*
-   * Prisma record not found error
-   */
-  else if (
-    error instanceof Prisma.PrismaClientKnownRequestError &&
-    error.code === "P2025"
-  ) {
-    errorResponse = {
-      statusCode: 404,
-      message: "Requested record was not found",
-    };
-  }
-
-  /*
-   * Prisma foreign key constraint error
-   */
-  else if (
-    error instanceof Prisma.PrismaClientKnownRequestError &&
-    error.code === "P2003"
-  ) {
-    errorResponse = {
-      statusCode: 400,
-      message: "Related record does not exist",
-    };
+      errorResponse = {
+        statusCode: 409,
+        message: `${fields} already exists`,
+      };
+    } else if (error.code === "P2025") {
+      errorResponse = {
+        statusCode: 404,
+        message: "Requested record was not found",
+      };
+    } else if (error.code === "P2003") {
+      errorResponse = {
+        statusCode: 400,
+        message: "Related record does not exist",
+      };
+    } else {
+      errorResponse = {
+        statusCode: 400,
+        message: "Database request failed",
+      };
+    }
   }
 
   /*
    * Prisma validation error
    */
   else if (
-    error instanceof Prisma.PrismaClientValidationError
+    error instanceof Error &&
+    error.name === "PrismaClientValidationError"
   ) {
     errorResponse = {
       statusCode: 400,
@@ -107,7 +117,10 @@ export const globalErrorHandler: ErrorRequestHandler = (
   /*
    * JWT expired error
    */
-  else if (error instanceof jwt.TokenExpiredError) {
+  else if (
+    error instanceof Error &&
+    error.name === "TokenExpiredError"
+  ) {
     errorResponse = {
       statusCode: 401,
       message: "Token has expired",
@@ -117,7 +130,10 @@ export const globalErrorHandler: ErrorRequestHandler = (
   /*
    * Invalid JWT error
    */
-  else if (error instanceof jwt.JsonWebTokenError) {
+  else if (
+    error instanceof Error &&
+    error.name === "JsonWebTokenError"
+  ) {
     errorResponse = {
       statusCode: 401,
       message: "Invalid token",
@@ -130,19 +146,20 @@ export const globalErrorHandler: ErrorRequestHandler = (
   else if (error instanceof Error) {
     errorResponse = {
       statusCode: 500,
-      message: error.message || "Internal server error",
+      message:
+        error.message || "Internal server error",
     };
   }
 
   res.status(errorResponse.statusCode).json({
     success: false,
     message: errorResponse.message,
-    errorSources: errorResponse.errorSources,
+    errorSources:
+      errorResponse.errorSources ?? [],
     stack:
-      config.env.NODE_ENV === "development"
-        ? error instanceof Error
-          ? error.stack
-          : undefined
+      process.env.NODE_ENV === "development" &&
+      error instanceof Error
+        ? error.stack
         : undefined,
   });
 };

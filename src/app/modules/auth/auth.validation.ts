@@ -34,6 +34,10 @@ const registerUserValidationSchema = z.object({
       .optional(),
 
     areaId: z.uuid("Invalid area ID").optional(),
+ 
+  role: z
+      .enum(["ADMIN", "TECHNICIAN", "CUSTOMER"])
+      .default("CUSTOMER"),
   }),
 });
 
