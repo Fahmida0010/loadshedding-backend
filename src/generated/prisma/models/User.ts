@@ -322,6 +322,7 @@ export type UserWhereInput = {
   outageHistoryChanges?: Prisma.OutageHistoryListRelationFilter
   auditLogs?: Prisma.AuditLogListRelationFilter
   refreshTokens?: Prisma.RefreshTokenListRelationFilter
+  bills?: Prisma.BillListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -352,6 +353,7 @@ export type UserOrderByWithRelationInput = {
   outageHistoryChanges?: Prisma.OutageHistoryOrderByRelationAggregateInput
   auditLogs?: Prisma.AuditLogOrderByRelationAggregateInput
   refreshTokens?: Prisma.RefreshTokenOrderByRelationAggregateInput
+  bills?: Prisma.BillOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -385,6 +387,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   outageHistoryChanges?: Prisma.OutageHistoryListRelationFilter
   auditLogs?: Prisma.AuditLogListRelationFilter
   refreshTokens?: Prisma.RefreshTokenListRelationFilter
+  bills?: Prisma.BillListRelationFilter
 }, "id" | "email" | "phone" | "googleId" | "employeeId">
 
 export type UserOrderByWithAggregationInput = {
@@ -462,6 +465,7 @@ export type UserCreateInput = {
   outageHistoryChanges?: Prisma.OutageHistoryCreateNestedManyWithoutChangedByInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  bills?: Prisma.BillCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -491,6 +495,7 @@ export type UserUncheckedCreateInput = {
   outageHistoryChanges?: Prisma.OutageHistoryUncheckedCreateNestedManyWithoutChangedByInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  bills?: Prisma.BillUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -520,6 +525,7 @@ export type UserUpdateInput = {
   outageHistoryChanges?: Prisma.OutageHistoryUpdateManyWithoutChangedByNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  bills?: Prisma.BillUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -549,6 +555,7 @@ export type UserUncheckedUpdateInput = {
   outageHistoryChanges?: Prisma.OutageHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  bills?: Prisma.BillUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -748,6 +755,20 @@ export type UserUpdateOneRequiredWithoutRefreshTokensNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutRefreshTokensInput, Prisma.UserUpdateWithoutRefreshTokensInput>, Prisma.UserUncheckedUpdateWithoutRefreshTokensInput>
 }
 
+export type UserCreateNestedOneWithoutBillsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutBillsInput, Prisma.UserUncheckedCreateWithoutBillsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBillsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutBillsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutBillsInput, Prisma.UserUncheckedCreateWithoutBillsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBillsInput
+  upsert?: Prisma.UserUpsertWithoutBillsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutBillsInput, Prisma.UserUpdateWithoutBillsInput>, Prisma.UserUncheckedUpdateWithoutBillsInput>
+}
+
 export type UserCreateNestedManyWithoutAreaInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutAreaInput, Prisma.UserUncheckedCreateWithoutAreaInput> | Prisma.UserCreateWithoutAreaInput[] | Prisma.UserUncheckedCreateWithoutAreaInput[]
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutAreaInput | Prisma.UserCreateOrConnectWithoutAreaInput[]
@@ -930,6 +951,7 @@ export type UserCreateWithoutRefreshTokensInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   outageHistoryChanges?: Prisma.OutageHistoryCreateNestedManyWithoutChangedByInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
+  bills?: Prisma.BillCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutRefreshTokensInput = {
@@ -958,6 +980,7 @@ export type UserUncheckedCreateWithoutRefreshTokensInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   outageHistoryChanges?: Prisma.OutageHistoryUncheckedCreateNestedManyWithoutChangedByInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
+  bills?: Prisma.BillUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutRefreshTokensInput = {
@@ -1002,6 +1025,7 @@ export type UserUpdateWithoutRefreshTokensInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   outageHistoryChanges?: Prisma.OutageHistoryUpdateManyWithoutChangedByNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
+  bills?: Prisma.BillUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRefreshTokensInput = {
@@ -1030,6 +1054,139 @@ export type UserUncheckedUpdateWithoutRefreshTokensInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   outageHistoryChanges?: Prisma.OutageHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
+  bills?: Prisma.BillUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutBillsInput = {
+  id?: string
+  name: string
+  email: string
+  phone?: string | null
+  password: string
+  googleId?: string | null
+  authProvider?: $Enums.AuthProvider
+  profileImage?: string | null
+  role?: $Enums.UserRole
+  status?: $Enums.UserStatus
+  employeeId?: string | null
+  skill?: string | null
+  experienceYears?: number | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  area?: Prisma.AreaCreateNestedOneWithoutUsersInput
+  createdSchedules?: Prisma.LoadSheddingScheduleCreateNestedManyWithoutCreatedByInput
+  reportedOutages?: Prisma.UnexpectedOutageCreateNestedManyWithoutReportedByInput
+  technicianAssignments?: Prisma.TechnicianAssignmentCreateNestedManyWithoutTechnicianInput
+  assignedByRecords?: Prisma.TechnicianAssignmentCreateNestedManyWithoutAssignedByInput
+  repairUpdates?: Prisma.RepairUpdateCreateNestedManyWithoutTechnicianInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  outageHistoryChanges?: Prisma.OutageHistoryCreateNestedManyWithoutChangedByInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutBillsInput = {
+  id?: string
+  name: string
+  email: string
+  phone?: string | null
+  password: string
+  googleId?: string | null
+  authProvider?: $Enums.AuthProvider
+  profileImage?: string | null
+  role?: $Enums.UserRole
+  status?: $Enums.UserStatus
+  areaId?: string | null
+  employeeId?: string | null
+  skill?: string | null
+  experienceYears?: number | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  createdSchedules?: Prisma.LoadSheddingScheduleUncheckedCreateNestedManyWithoutCreatedByInput
+  reportedOutages?: Prisma.UnexpectedOutageUncheckedCreateNestedManyWithoutReportedByInput
+  technicianAssignments?: Prisma.TechnicianAssignmentUncheckedCreateNestedManyWithoutTechnicianInput
+  assignedByRecords?: Prisma.TechnicianAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  repairUpdates?: Prisma.RepairUpdateUncheckedCreateNestedManyWithoutTechnicianInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  outageHistoryChanges?: Prisma.OutageHistoryUncheckedCreateNestedManyWithoutChangedByInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutBillsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutBillsInput, Prisma.UserUncheckedCreateWithoutBillsInput>
+}
+
+export type UserUpsertWithoutBillsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutBillsInput, Prisma.UserUncheckedUpdateWithoutBillsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutBillsInput, Prisma.UserUncheckedCreateWithoutBillsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutBillsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutBillsInput, Prisma.UserUncheckedUpdateWithoutBillsInput>
+}
+
+export type UserUpdateWithoutBillsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  authProvider?: Prisma.EnumAuthProviderFieldUpdateOperationsInput | $Enums.AuthProvider
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skill?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  experienceYears?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  area?: Prisma.AreaUpdateOneWithoutUsersNestedInput
+  createdSchedules?: Prisma.LoadSheddingScheduleUpdateManyWithoutCreatedByNestedInput
+  reportedOutages?: Prisma.UnexpectedOutageUpdateManyWithoutReportedByNestedInput
+  technicianAssignments?: Prisma.TechnicianAssignmentUpdateManyWithoutTechnicianNestedInput
+  assignedByRecords?: Prisma.TechnicianAssignmentUpdateManyWithoutAssignedByNestedInput
+  repairUpdates?: Prisma.RepairUpdateUpdateManyWithoutTechnicianNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  outageHistoryChanges?: Prisma.OutageHistoryUpdateManyWithoutChangedByNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutBillsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  authProvider?: Prisma.EnumAuthProviderFieldUpdateOperationsInput | $Enums.AuthProvider
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  areaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skill?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  experienceYears?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdSchedules?: Prisma.LoadSheddingScheduleUncheckedUpdateManyWithoutCreatedByNestedInput
+  reportedOutages?: Prisma.UnexpectedOutageUncheckedUpdateManyWithoutReportedByNestedInput
+  technicianAssignments?: Prisma.TechnicianAssignmentUncheckedUpdateManyWithoutTechnicianNestedInput
+  assignedByRecords?: Prisma.TechnicianAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  repairUpdates?: Prisma.RepairUpdateUncheckedUpdateManyWithoutTechnicianNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  outageHistoryChanges?: Prisma.OutageHistoryUncheckedUpdateManyWithoutChangedByNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutAreaInput = {
@@ -1058,6 +1215,7 @@ export type UserCreateWithoutAreaInput = {
   outageHistoryChanges?: Prisma.OutageHistoryCreateNestedManyWithoutChangedByInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  bills?: Prisma.BillCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAreaInput = {
@@ -1086,6 +1244,7 @@ export type UserUncheckedCreateWithoutAreaInput = {
   outageHistoryChanges?: Prisma.OutageHistoryUncheckedCreateNestedManyWithoutChangedByInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  bills?: Prisma.BillUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAreaInput = {
@@ -1163,6 +1322,7 @@ export type UserCreateWithoutCreatedSchedulesInput = {
   outageHistoryChanges?: Prisma.OutageHistoryCreateNestedManyWithoutChangedByInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  bills?: Prisma.BillCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCreatedSchedulesInput = {
@@ -1191,6 +1351,7 @@ export type UserUncheckedCreateWithoutCreatedSchedulesInput = {
   outageHistoryChanges?: Prisma.OutageHistoryUncheckedCreateNestedManyWithoutChangedByInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  bills?: Prisma.BillUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCreatedSchedulesInput = {
@@ -1235,6 +1396,7 @@ export type UserUpdateWithoutCreatedSchedulesInput = {
   outageHistoryChanges?: Prisma.OutageHistoryUpdateManyWithoutChangedByNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  bills?: Prisma.BillUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreatedSchedulesInput = {
@@ -1263,6 +1425,7 @@ export type UserUncheckedUpdateWithoutCreatedSchedulesInput = {
   outageHistoryChanges?: Prisma.OutageHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  bills?: Prisma.BillUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutReportedOutagesInput = {
@@ -1291,6 +1454,7 @@ export type UserCreateWithoutReportedOutagesInput = {
   outageHistoryChanges?: Prisma.OutageHistoryCreateNestedManyWithoutChangedByInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  bills?: Prisma.BillCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutReportedOutagesInput = {
@@ -1319,6 +1483,7 @@ export type UserUncheckedCreateWithoutReportedOutagesInput = {
   outageHistoryChanges?: Prisma.OutageHistoryUncheckedCreateNestedManyWithoutChangedByInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  bills?: Prisma.BillUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutReportedOutagesInput = {
@@ -1363,6 +1528,7 @@ export type UserUpdateWithoutReportedOutagesInput = {
   outageHistoryChanges?: Prisma.OutageHistoryUpdateManyWithoutChangedByNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  bills?: Prisma.BillUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutReportedOutagesInput = {
@@ -1391,6 +1557,7 @@ export type UserUncheckedUpdateWithoutReportedOutagesInput = {
   outageHistoryChanges?: Prisma.OutageHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  bills?: Prisma.BillUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutTechnicianAssignmentsInput = {
@@ -1419,6 +1586,7 @@ export type UserCreateWithoutTechnicianAssignmentsInput = {
   outageHistoryChanges?: Prisma.OutageHistoryCreateNestedManyWithoutChangedByInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  bills?: Prisma.BillCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutTechnicianAssignmentsInput = {
@@ -1447,6 +1615,7 @@ export type UserUncheckedCreateWithoutTechnicianAssignmentsInput = {
   outageHistoryChanges?: Prisma.OutageHistoryUncheckedCreateNestedManyWithoutChangedByInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  bills?: Prisma.BillUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutTechnicianAssignmentsInput = {
@@ -1480,6 +1649,7 @@ export type UserCreateWithoutAssignedByRecordsInput = {
   outageHistoryChanges?: Prisma.OutageHistoryCreateNestedManyWithoutChangedByInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  bills?: Prisma.BillCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAssignedByRecordsInput = {
@@ -1508,6 +1678,7 @@ export type UserUncheckedCreateWithoutAssignedByRecordsInput = {
   outageHistoryChanges?: Prisma.OutageHistoryUncheckedCreateNestedManyWithoutChangedByInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  bills?: Prisma.BillUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAssignedByRecordsInput = {
@@ -1552,6 +1723,7 @@ export type UserUpdateWithoutTechnicianAssignmentsInput = {
   outageHistoryChanges?: Prisma.OutageHistoryUpdateManyWithoutChangedByNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  bills?: Prisma.BillUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTechnicianAssignmentsInput = {
@@ -1580,6 +1752,7 @@ export type UserUncheckedUpdateWithoutTechnicianAssignmentsInput = {
   outageHistoryChanges?: Prisma.OutageHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  bills?: Prisma.BillUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutAssignedByRecordsInput = {
@@ -1619,6 +1792,7 @@ export type UserUpdateWithoutAssignedByRecordsInput = {
   outageHistoryChanges?: Prisma.OutageHistoryUpdateManyWithoutChangedByNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  bills?: Prisma.BillUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAssignedByRecordsInput = {
@@ -1647,6 +1821,7 @@ export type UserUncheckedUpdateWithoutAssignedByRecordsInput = {
   outageHistoryChanges?: Prisma.OutageHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  bills?: Prisma.BillUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutRepairUpdatesInput = {
@@ -1675,6 +1850,7 @@ export type UserCreateWithoutRepairUpdatesInput = {
   outageHistoryChanges?: Prisma.OutageHistoryCreateNestedManyWithoutChangedByInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  bills?: Prisma.BillCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutRepairUpdatesInput = {
@@ -1703,6 +1879,7 @@ export type UserUncheckedCreateWithoutRepairUpdatesInput = {
   outageHistoryChanges?: Prisma.OutageHistoryUncheckedCreateNestedManyWithoutChangedByInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  bills?: Prisma.BillUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutRepairUpdatesInput = {
@@ -1747,6 +1924,7 @@ export type UserUpdateWithoutRepairUpdatesInput = {
   outageHistoryChanges?: Prisma.OutageHistoryUpdateManyWithoutChangedByNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  bills?: Prisma.BillUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRepairUpdatesInput = {
@@ -1775,6 +1953,7 @@ export type UserUncheckedUpdateWithoutRepairUpdatesInput = {
   outageHistoryChanges?: Prisma.OutageHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  bills?: Prisma.BillUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutOutageHistoryChangesInput = {
@@ -1803,6 +1982,7 @@ export type UserCreateWithoutOutageHistoryChangesInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  bills?: Prisma.BillCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutOutageHistoryChangesInput = {
@@ -1831,6 +2011,7 @@ export type UserUncheckedCreateWithoutOutageHistoryChangesInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  bills?: Prisma.BillUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutOutageHistoryChangesInput = {
@@ -1875,6 +2056,7 @@ export type UserUpdateWithoutOutageHistoryChangesInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  bills?: Prisma.BillUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutOutageHistoryChangesInput = {
@@ -1903,6 +2085,7 @@ export type UserUncheckedUpdateWithoutOutageHistoryChangesInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  bills?: Prisma.BillUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutNotificationsInput = {
@@ -1931,6 +2114,7 @@ export type UserCreateWithoutNotificationsInput = {
   outageHistoryChanges?: Prisma.OutageHistoryCreateNestedManyWithoutChangedByInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  bills?: Prisma.BillCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -1959,6 +2143,7 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   outageHistoryChanges?: Prisma.OutageHistoryUncheckedCreateNestedManyWithoutChangedByInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  bills?: Prisma.BillUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -2003,6 +2188,7 @@ export type UserUpdateWithoutNotificationsInput = {
   outageHistoryChanges?: Prisma.OutageHistoryUpdateManyWithoutChangedByNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  bills?: Prisma.BillUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -2031,6 +2217,7 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   outageHistoryChanges?: Prisma.OutageHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  bills?: Prisma.BillUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutAuditLogsInput = {
@@ -2059,6 +2246,7 @@ export type UserCreateWithoutAuditLogsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   outageHistoryChanges?: Prisma.OutageHistoryCreateNestedManyWithoutChangedByInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  bills?: Prisma.BillCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAuditLogsInput = {
@@ -2087,6 +2275,7 @@ export type UserUncheckedCreateWithoutAuditLogsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   outageHistoryChanges?: Prisma.OutageHistoryUncheckedCreateNestedManyWithoutChangedByInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  bills?: Prisma.BillUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAuditLogsInput = {
@@ -2131,6 +2320,7 @@ export type UserUpdateWithoutAuditLogsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   outageHistoryChanges?: Prisma.OutageHistoryUpdateManyWithoutChangedByNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  bills?: Prisma.BillUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAuditLogsInput = {
@@ -2159,6 +2349,7 @@ export type UserUncheckedUpdateWithoutAuditLogsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   outageHistoryChanges?: Prisma.OutageHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  bills?: Prisma.BillUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyAreaInput = {
@@ -2206,6 +2397,7 @@ export type UserUpdateWithoutAreaInput = {
   outageHistoryChanges?: Prisma.OutageHistoryUpdateManyWithoutChangedByNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  bills?: Prisma.BillUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAreaInput = {
@@ -2234,6 +2426,7 @@ export type UserUncheckedUpdateWithoutAreaInput = {
   outageHistoryChanges?: Prisma.OutageHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  bills?: Prisma.BillUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateManyWithoutAreaInput = {
@@ -2270,6 +2463,7 @@ export type UserCountOutputType = {
   outageHistoryChanges: number
   auditLogs: number
   refreshTokens: number
+  bills: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2282,6 +2476,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   outageHistoryChanges?: boolean | UserCountOutputTypeCountOutageHistoryChangesArgs
   auditLogs?: boolean | UserCountOutputTypeCountAuditLogsArgs
   refreshTokens?: boolean | UserCountOutputTypeCountRefreshTokensArgs
+  bills?: boolean | UserCountOutputTypeCountBillsArgs
 }
 
 /**
@@ -2357,6 +2552,13 @@ export type UserCountOutputTypeCountRefreshTokensArgs<ExtArgs extends runtime.Ty
   where?: Prisma.RefreshTokenWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountBillsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.BillWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -2386,6 +2588,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   outageHistoryChanges?: boolean | Prisma.User$outageHistoryChangesArgs<ExtArgs>
   auditLogs?: boolean | Prisma.User$auditLogsArgs<ExtArgs>
   refreshTokens?: boolean | Prisma.User$refreshTokensArgs<ExtArgs>
+  bills?: boolean | Prisma.User$billsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -2463,6 +2666,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   outageHistoryChanges?: boolean | Prisma.User$outageHistoryChangesArgs<ExtArgs>
   auditLogs?: boolean | Prisma.User$auditLogsArgs<ExtArgs>
   refreshTokens?: boolean | Prisma.User$refreshTokensArgs<ExtArgs>
+  bills?: boolean | Prisma.User$billsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2485,6 +2689,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     outageHistoryChanges: Prisma.$OutageHistoryPayload<ExtArgs>[]
     auditLogs: Prisma.$AuditLogPayload<ExtArgs>[]
     refreshTokens: Prisma.$RefreshTokenPayload<ExtArgs>[]
+    bills: Prisma.$BillPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2908,6 +3113,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   outageHistoryChanges<T extends Prisma.User$outageHistoryChangesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$outageHistoryChangesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OutageHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   auditLogs<T extends Prisma.User$auditLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$auditLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   refreshTokens<T extends Prisma.User$refreshTokensArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$refreshTokensArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RefreshTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  bills<T extends Prisma.User$billsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$billsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BillPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3587,6 +3793,30 @@ export type User$refreshTokensArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   distinct?: Prisma.RefreshTokenScalarFieldEnum | Prisma.RefreshTokenScalarFieldEnum[]
+}
+
+/**
+ * User.bills
+ */
+export type User$billsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Bill
+   */
+  select?: Prisma.BillSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Bill
+   */
+  omit?: Prisma.BillOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BillInclude<ExtArgs> | null
+  where?: Prisma.BillWhereInput
+  orderBy?: Prisma.BillOrderByWithRelationInput | Prisma.BillOrderByWithRelationInput[]
+  cursor?: Prisma.BillWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.BillScalarFieldEnum | Prisma.BillScalarFieldEnum[]
 }
 
 /**

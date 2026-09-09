@@ -28,6 +28,11 @@ export type User = Prisma.UserModel
  */
 export type RefreshToken = Prisma.RefreshTokenModel
 /**
+ * Model Bill
+ * 
+ */
+export type Bill = Prisma.BillModel
+/**
  * Model DistributionZone
  * 
  */

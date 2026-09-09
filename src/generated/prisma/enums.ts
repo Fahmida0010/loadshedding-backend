@@ -9,23 +9,6 @@
 * 🟢 You can import this file directly.
 */
 
-export const AuthProvider = {
-  LOCAL: 'LOCAL',
-  GOOGLE: 'GOOGLE'
-} as const
-
-export type AuthProvider = (typeof AuthProvider)[keyof typeof AuthProvider]
-
-
-export const UserRole = {
-  ADMIN: 'ADMIN',
-  TECHNICIAN: 'TECHNICIAN',
-  CUSTOMER: 'CUSTOMER'
-} as const
-
-export type UserRole = (typeof UserRole)[keyof typeof UserRole]
-
-
 export const UserStatus = {
   ACTIVE: 'ACTIVE',
   INACTIVE: 'INACTIVE',
@@ -106,3 +89,30 @@ export const NotificationChannel = {
 } as const
 
 export type NotificationChannel = (typeof NotificationChannel)[keyof typeof NotificationChannel]
+
+
+export const AuthProvider = {
+  LOCAL: 'LOCAL',
+  GOOGLE: 'GOOGLE'
+} as const
+
+export type AuthProvider = (typeof AuthProvider)[keyof typeof AuthProvider]
+
+
+export const UserRole = {
+  ADMIN: 'ADMIN',
+  TECHNICIAN: 'TECHNICIAN',
+  CUSTOMER: 'CUSTOMER'
+} as const
+
+export type UserRole = (typeof UserRole)[keyof typeof UserRole]
+
+
+export const BillStatus = {
+  UNPAID: 'UNPAID',
+  PAID: 'PAID',
+  OVERDUE: 'OVERDUE',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type BillStatus = (typeof BillStatus)[keyof typeof BillStatus]

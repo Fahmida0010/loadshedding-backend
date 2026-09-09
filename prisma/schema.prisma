@@ -80,7 +80,13 @@ enum UserRole {
   TECHNICIAN
   CUSTOMER
 }
- 
+ enum BillStatus {
+  UNPAID
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
 model User {
   id           String       @id @default(uuid())
   name         String
@@ -110,7 +116,7 @@ model User {
   outageHistoryChanges  OutageHistory[]        @relation("OutageStatusChanger")
   auditLogs             AuditLog[]
   refreshTokens         RefreshToken[]
-
+  bills                 Bill[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
@@ -138,9 +144,37 @@ model RefreshToken {
   @@map("refresh_tokens")
 }
 
+// ======================================================
+// BILLING AND PAYMENTS
+// ======================================================
+
+model Bill {
+  id            String     @id @default(uuid())
+  userId        String
+  billNumber    String     @unique
+  month         String     // e.g., "September 2026"
+  amount        Float
+  dueDate       DateTime
+  status        BillStatus @default(UNPAID)
+  
+  // Payment Gateway Information
+  transactionId String?    @unique
+  paymentMethod String?    // e.g., "STRIPE", "SSLCOMMERZ", "BKASH"
+  paidAt        DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@index([userId])
+  @@index([status])
+  @@index([billNumber])
+  @@map("bills")
+}
 
 // POWER DISTRIBUTION STRUCTURE  Distribution Zone → Substation → Feeder → Area
-
 
 model DistributionZone {
   id          String  @id @default(uuid())

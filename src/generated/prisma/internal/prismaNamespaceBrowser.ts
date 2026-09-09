@@ -53,6 +53,7 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   User: 'User',
   RefreshToken: 'RefreshToken',
+  Bill: 'Bill',
   DistributionZone: 'DistributionZone',
   Substation: 'Substation',
   Feeder: 'Feeder',
@@ -116,6 +117,25 @@ export const RefreshTokenScalarFieldEnum = {
 } as const
 
 export type RefreshTokenScalarFieldEnum = (typeof RefreshTokenScalarFieldEnum)[keyof typeof RefreshTokenScalarFieldEnum]
+
+
+export const BillScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  billNumber: 'billNumber',
+  month: 'month',
+  amount: 'amount',
+  dueDate: 'dueDate',
+  status: 'status',
+  transactionId: 'transactionId',
+  paymentMethod: 'paymentMethod',
+  paidAt: 'paidAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type BillScalarFieldEnum = (typeof BillScalarFieldEnum)[keyof typeof BillScalarFieldEnum]
 
 
 export const DistributionZoneScalarFieldEnum = {

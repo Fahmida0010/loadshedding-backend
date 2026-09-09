@@ -10,6 +10,7 @@
  */
 export type * from './models/User'
 export type * from './models/RefreshToken'
+export type * from './models/Bill'
 export type * from './models/DistributionZone'
 export type * from './models/Substation'
 export type * from './models/Feeder'
