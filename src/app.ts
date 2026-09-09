@@ -98,11 +98,6 @@ app.get("/", (_req, res) => {
 
 app.use("/api/v1", routes);
 
-app.use(
-  "/distribution-zones",
-  DistributionZoneRoutes,
-);
-
 
 app.use(notFound);
 app.use(globalErrorHandler);

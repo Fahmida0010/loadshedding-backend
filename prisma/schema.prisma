@@ -70,8 +70,6 @@ enum NotificationChannel {
   SMS
 }
 
-
-
 enum AuthProvider {
   LOCAL
   GOOGLE
@@ -123,9 +121,7 @@ model User {
   @@map("users")
 }
 
-// ======================================================
-// AUTHENTICATION
-// ======================================================
+
 
 model RefreshToken {
   id        String   @id @default(uuid())
@@ -142,10 +138,9 @@ model RefreshToken {
   @@map("refresh_tokens")
 }
 
-// ======================================================
-// POWER DISTRIBUTION STRUCTURE
-// Distribution Zone → Substation → Feeder → Area
-// ======================================================
+
+// POWER DISTRIBUTION STRUCTURE  Distribution Zone → Substation → Feeder → Area
+
 
 model DistributionZone {
   id          String  @id @default(uuid())
