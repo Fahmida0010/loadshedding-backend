@@ -1,9 +1,8 @@
 import type { Request, Response } from "express";
-
-import { catchAsync } from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
 
 import { SubstationService } from "./substation.service";
+import { catchAsync } from "../../utils/catchAsyc";
 
 const createSubstation = catchAsync(
   async (req: Request, res: Response) => {

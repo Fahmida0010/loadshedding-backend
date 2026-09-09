@@ -1,6 +1,5 @@
-import { Prisma } from "../../../generated/prisma/client";
 import { prisma } from "../../config/prisma";
-import { AppError } from "../../errors/AppError";
+import { AppError } from "../../utils/AppError";
 
 import type {
   ICreateSubstation,
@@ -88,7 +87,7 @@ const getAllSubstations = async (
 
   const searchTerm = query.searchTerm?.trim();
 
-  const where: Prisma.SubstationWhereInput = {
+  const where: prisma.SubstationWhereInput = {
     deletedAt: null,
     ...(query.zoneId && {
       zoneId: query.zoneId,

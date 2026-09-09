@@ -33,7 +33,7 @@ const isPrismaError = (
 
 export const globalErrorHandler: ErrorRequestHandler = (
   error,
-  _req,
+  req,
   res,
   _next,
 ) => {
@@ -65,42 +65,65 @@ export const globalErrorHandler: ErrorRequestHandler = (
       })),
     };
   }
+/*
+ * Prisma errors
+ */
+else if (isPrismaError(error)) {
+  if (error.code === "P2002") {
+  const target = error.meta?.target;
 
-  /*
-   * Prisma errors
-   */
-  else if (isPrismaError(error)) {
-    if (error.code === "P2002") {
-      const target = error.meta?.target;
+  const targetText = Array.isArray(target)
+    ? target.join(" ").toLowerCase()
+    : String(target ?? "").toLowerCase();
 
-      const fields = Array.isArray(target)
-        ? target.join(", ")
-        : typeof target === "string"
-          ? target
-          : "Email or phone";
+  const errorMessage =
+    error instanceof Error
+      ? error.message.toLowerCase()
+      : "";
 
-      errorResponse = {
-        statusCode: 409,
-        message: `${fields} already exists`,
-      };
-    } else if (error.code === "P2025") {
-      errorResponse = {
-        statusCode: 404,
-        message: "Requested record was not found",
-      };
-    } else if (error.code === "P2003") {
-      errorResponse = {
-        statusCode: 400,
-        message: "Related record does not exist",
-      };
-    } else {
-      errorResponse = {
-        statusCode: 400,
-        message: "Database request failed",
-      };
-    }
+  
+  const errorDetails = `${targetText} ${errorMessage}`;
+
+  let message =
+    "A record with the same value already exists";
+
+  if (
+    errorDetails.includes(
+      "substations_zoneid_name_key",
+    ) ||
+    (
+      errorDetails.includes("zoneid") &&
+      errorDetails.includes("name")
+    )
+  ) {
+    const substationName = req.body?.name;
+
+    message = substationName
+      ? `Substation name "${substationName}" already exists in this distribution zone`
+      : "A substation with this name already exists in this distribution zone";
+  } else if (
+    errorDetails.includes("substations_code_key") ||
+    errorDetails.includes("code")
+  ) {
+    const code = req.body?.code;
+
+    message = code
+      ? `Substation code "${code}" already exists`
+      : "A substation with this code already exists";
+  } else if (errorDetails.includes("email")) {
+    message = "An account with this email already exists";
+  } else if (errorDetails.includes("phone")) {
+    message =
+      "An account with this phone number already exists";
   }
 
+  errorResponse = {
+    statusCode: 409,
+    message,
+    errorSources: [],
+  };
+}
+}
   /*
    * Prisma validation error
    */
