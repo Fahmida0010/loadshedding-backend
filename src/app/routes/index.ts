@@ -5,6 +5,7 @@ import { SubstationRoutes } from "../modules/substation/substation.route";
 import { FeederRoutes } from "../modules/feeder/feeder.route";
 import { AreaRoutes } from "../modules/area/area.route";
 import { ScheduleRoutes } from "../modules/schedule/schedule.route";
+import { OutageRoutes } from "../modules/outage/outage.route";
 
 const router = Router();
 
@@ -32,6 +33,10 @@ const moduleRoutes = [
   {
     path: "/schedules",
     route: ScheduleRoutes,
+  },
+    {
+    path: "/outages",
+    route: OutageRoutes,
   },
 ];
 
