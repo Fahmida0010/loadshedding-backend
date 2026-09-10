@@ -3,6 +3,7 @@ import { AuthRoutes } from "../modules/auth/auth.route";
 import { DistributionZoneRoutes } from "../modules/distributionZone/distributionZone.route";
 import { SubstationRoutes } from "../modules/substation/substation.route";
 import { FeederRoutes } from "../modules/feeder/feeder.route";
+import { AreaRoutes } from "../modules/area/area.route";
 
 const router = Router();
 
@@ -22,6 +23,10 @@ const moduleRoutes = [
     {
     path: "/feeders",
     route: FeederRoutes,
+  },
+  {
+    path: "/areas",
+    route: AreaRoutes,
   },
 ];
 

@@ -1,10 +1,10 @@
 import type { Request, Response } from "express";
-
-import { catchAsync } from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
 
 import type { IAreaQuery } from "./area.interface";
 import { AreaService } from "./area.service";
+import { catchAsync } from "../../utils/catchAsyc";
+
 
 const createArea = catchAsync(
   async (req: Request, res: Response) => {
