@@ -86,16 +86,10 @@ const router = Router();
  *         description: Area not found
  */
 router.post(
-  "/",
-  auth(
-    "CUSTOMER",
-    "ADMIN",
-    "TECHNICIAN",
-  ),
-  validateRequest(
-    OutageValidation.createOutageSchema,
-  ),
-  OutageController.createOutage,
+	"/",
+	auth("CUSTOMER", "ADMIN"),
+	validateRequest(OutageValidation.createOutageSchema),
+	OutageController.createOutage,
 );
 
 /**
@@ -129,13 +123,9 @@ router.post(
  *         description: User outage reports retrieved successfully
  */
 router.get(
-  "/my-reports",
-  auth(
-    "CUSTOMER",
-    "ADMIN",
-    "TECHNICIAN",
-  ),
-  OutageController.getMyOutages,
+	"/my-reports",
+	auth("CUSTOMER", "ADMIN"),
+	OutageController.getMyOutages,
 );
 
 /**
@@ -210,10 +200,7 @@ router.get(
  *       200:
  *         description: Outages retrieved successfully
  */
-router.get(
-  "/",
-  OutageController.getAllOutages,
-);
+router.get("/", OutageController.getAllOutages);
 
 /**
  * @openapi
@@ -235,11 +222,9 @@ router.get(
  *         description: Outage not found
  */
 router.get(
-  "/:id",
-  validateRequest(
-    OutageValidation.outageIdParamSchema,
-  ),
-  OutageController.getOutageById,
+	"/:id",
+	validateRequest(OutageValidation.outageIdParamSchema),
+	OutageController.getOutageById,
 );
 
 /**
@@ -291,15 +276,11 @@ router.get(
  *         description: Outage not found
  */
 router.patch(
-  "/:id",
-  auth("ADMIN"),
-  validateRequest(
-    OutageValidation.outageIdParamSchema,
-  ),
-  validateRequest(
-    OutageValidation.updateOutageSchema,
-  ),
-  OutageController.updateOutage,
+	"/:id",
+	auth("ADMIN", "CUSTOMER"),
+	validateRequest(OutageValidation.outageIdParamSchema),
+	validateRequest(OutageValidation.updateOutageSchema),
+	OutageController.updateOutage,
 );
 
 /**
@@ -334,15 +315,11 @@ router.patch(
  *         description: Outage not found
  */
 router.patch(
-  "/:id/status",
-  auth("ADMIN", "TECHNICIAN"),
-  validateRequest(
-    OutageValidation.outageIdParamSchema,
-  ),
-  validateRequest(
-    OutageValidation.updateOutageStatusSchema,
-  ),
-  OutageController.updateOutageStatus,
+	"/:id/status",
+	auth("ADMIN"),
+	validateRequest(OutageValidation.outageIdParamSchema),
+	validateRequest(OutageValidation.updateOutageStatusSchema),
+	OutageController.updateOutageStatus,
 );
 
 /**
@@ -371,12 +348,10 @@ router.patch(
  *         description: Outage not found
  */
 router.delete(
-  "/:id",
-  auth("ADMIN"),
-  validateRequest(
-    OutageValidation.outageIdParamSchema,
-  ),
-  OutageController.deleteOutage,
+	"/:id",
+	auth("ADMIN"),
+	validateRequest(OutageValidation.outageIdParamSchema),
+	OutageController.deleteOutage,
 );
 
 export const OutageRoutes = router;

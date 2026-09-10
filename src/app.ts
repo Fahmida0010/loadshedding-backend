@@ -1,14 +1,13 @@
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import express from "express";
+import rateLimit from "express-rate-limit";
 import helmet from "helmet";
 import swaggerJsdoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
-
 import { globalErrorHandler } from "./app/middlewares/globalErrorhandler";
 import { notFound } from "./app/middlewares/notFound";
 import routes from "./app/routes";
-import { DistributionZoneRoutes } from "./app/modules/distributionZone/distributionZone.route";
 
 const app = express();
 
@@ -17,67 +16,60 @@ const PORT = Number(process.env.PORT) || 5000;
 app.use(helmet());
 
 app.use(
-  cors({
-    origin:
-      process.env.FRONTEND_URL ||
-      "http://localhost:3000",
-    credentials: true,
-  }),
+	cors({
+		origin: process.env.FRONTEND_URL || "http://localhost:3000",
+		credentials: true,
+	}),
 );
 
 app.use(express.json());
 app.use(
-  express.urlencoded({
-    extended: true,
-  }),
+	express.urlencoded({
+		extended: true,
+	}),
 );
 
 app.use(cookieParser());
 
 const swaggerOptions: swaggerJsdoc.Options = {
-  definition: {
-    openapi: "3.0.0",
+	definition: {
+		openapi: "3.0.0",
 
-    info: {
-      title: "Load Shedding Management API",
-      version: "1.0.0",
-      description:
-        "API Documentation for Load Shedding and Power Outage Management System",
-    },
+		info: {
+			title: "Load Shedding Management API",
+			version: "1.0.0",
+			description:
+				"API Documentation for Load Shedding and Power Outage Management System",
+		},
 
-    servers: [
-      {
-        url: `http://localhost:${PORT}/api/v1`,
-        description: "Local development server",
-      },
-    ],
+		servers: [
+			{
+				url: `http://localhost:${PORT}/api/v1`,
+				description: "Local development server",
+			},
+		],
 
-    components: {
-      securitySchemes: {
-        bearerAuth: {
-          type: "http",
-          scheme: "bearer",
-          bearerFormat: "JWT",
-        },
-      },
-    },
-  },
+		components: {
+			securitySchemes: {
+				bearerAuth: {
+					type: "http",
+					scheme: "bearer",
+					bearerFormat: "JWT",
+				},
+			},
+		},
+	},
 
-  apis: [
-    "./src/app/routes/**/*.ts",
-    "./src/app/modules/**/*.route.ts",
-    "./src/app.ts",
-  ],
+	apis: [
+		"./src/app/routes/**/*.ts",
+		"./src/app/modules/**/*.route.ts",
+		"./src/app.ts",
+	],
 };
 
-const swaggerSpec =
-  swaggerJsdoc(swaggerOptions);
+const swaggerSpec = swaggerJsdoc(swaggerOptions);
 
-app.use(
-  "/api-docs",
-  swaggerUi.serve,
-  swaggerUi.setup(swaggerSpec),
-);
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 /**
  * @openapi
@@ -90,21 +82,37 @@ app.use(
  *         description: Server is running successfully
  */
 app.get("/", (_req, res) => {
-  res.status(200).json({
-    success: true,
-    message: "Load shedding server is running!",
-  });
+	res.status(200).json({
+		success: true,
+		message: "Load shedding server is running!",
+	});
 });
 
-app.use("/api/v1", routes);
+const apiLimiter = rateLimit({
+	windowMs: 15 * 60 * 1000, // 15 minutes
+	max: 100, // limit each IP to 100 requests per windowMs
+	standardHeaders: true,
+	legacyHeaders: false,
 
+	skip: (req) => req.method === "OPTIONS",
+
+	handler: (_req, res) => {
+		res.status(429).json({
+			success: false,
+			message: "Too many requests. Please try again after 15 minutes.",
+		});
+	},
+});
+
+app.use("/api/v1", apiLimiter);
+app.use("/api/v1", routes);
 
 app.use(notFound);
 app.use(globalErrorHandler);
 
 app.listen(PORT, () => {
-  console.log(`Server is running on ${process.env.BACKEND_URL}`);
-  console.log(`Swagger documentation: ${process.env.BACKEND_URL}/api-docs`);
+	console.log(`Server is running on ${process.env.BACKEND_URL}`);
+	console.log(`Swagger documentation: ${process.env.BACKEND_URL}/api-docs`);
 });
 
 export default app;

@@ -56,11 +56,9 @@ const router = Router();
  *         description: Email already exists
  */
 router.post(
-  "/register",
-  validateRequest(
-    AuthValidation.registerUserValidationSchema,
-  ),
-  AuthController.registerUser,
+	"/register",
+	validateRequest(AuthValidation.registerUserValidationSchema),
+	AuthController.registerUser,
 );
 
 /**
@@ -97,11 +95,9 @@ router.post(
  *         description: Invalid email or password
  */
 router.post(
-  "/login",
-  validateRequest(
-    AuthValidation.loginUserValidationSchema,
-  ),
-  AuthController.loginUser,
+	"/login",
+	validateRequest(AuthValidation.loginUserValidationSchema),
+	AuthController.loginUser,
 );
 
 /**
@@ -130,11 +126,9 @@ router.post(
  *         description: Invalid Google token
  */
 router.post(
-  "/google",
-  validateRequest(
-    AuthValidation.googleLoginValidationSchema,
-  ),
-  AuthController.loginWithGoogle,
+	"/google",
+	validateRequest(AuthValidation.googleLoginValidationSchema),
+	AuthController.loginWithGoogle,
 );
 
 /**
@@ -163,11 +157,9 @@ router.post(
  *         description: Invalid or expired refresh token
  */
 router.post(
-  "/refresh-token",
-  validateRequest(
-    AuthValidation.refreshTokenValidationSchema,
-  ),
-  AuthController.refreshAccessToken,
+	"/refresh-token",
+	validateRequest(AuthValidation.refreshTokenValidationSchema),
+	AuthController.refreshAccessToken,
 );
 
 /**
@@ -191,11 +183,9 @@ router.post(
  *         description: Logout successful
  */
 router.post(
-  "/logout",
-  validateRequest(
-    AuthValidation.logoutValidationSchema,
-  ),
-  AuthController.logoutUser,
+	"/logout",
+	validateRequest(AuthValidation.logoutValidationSchema),
+	AuthController.logoutUser,
 );
 
 /**
@@ -216,9 +206,9 @@ router.post(
  *         description: Forbidden
  */
 router.get(
-  "/me",
-  auth("ADMIN", "TECHNICIAN", "CUSTOMER"),
-  AuthController.getCurrentUser,
+	"/me",
+	auth("ADMIN", "TECHNICIAN", "CUSTOMER"),
+	AuthController.getCurrentUser,
 );
 
 /**
@@ -255,12 +245,10 @@ router.get(
  *         description: Unauthorized
  */
 router.patch(
-  "/me",
-  auth("ADMIN", "TECHNICIAN", "CUSTOMER"),
-  validateRequest(
-    AuthValidation.updateProfileValidationSchema,
-  ),
-  AuthController.updateProfile,
+	"/me",
+	auth("ADMIN", "TECHNICIAN", "CUSTOMER"),
+	validateRequest(AuthValidation.updateProfileValidationSchema),
+	AuthController.updateProfile,
 );
 
 /**
@@ -299,12 +287,10 @@ router.patch(
  *         description: Unauthorized
  */
 router.patch(
-  "/change-password",
-  auth("ADMIN", "TECHNICIAN", "CUSTOMER"),
-  validateRequest(
-    AuthValidation.changePasswordValidationSchema,
-  ),
-  AuthController.changePassword,
+	"/change-password",
+	auth("ADMIN", "TECHNICIAN", "CUSTOMER"),
+	validateRequest(AuthValidation.changePasswordValidationSchema),
+	AuthController.changePassword,
 );
 
 export const AuthRoutes = router;

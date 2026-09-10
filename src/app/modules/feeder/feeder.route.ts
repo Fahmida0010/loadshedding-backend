@@ -57,12 +57,10 @@ const router = Router();
  *         description: Feeder name or code already exists
  */
 router.post(
-  "/",
-  auth("ADMIN"),
-  validateRequest(
-    FeederValidation.createFeederValidationSchema,
-  ),
-  FeederController.createFeeder,
+	"/",
+	auth("ADMIN"),
+	validateRequest(FeederValidation.createFeederValidationSchema),
+	FeederController.createFeeder,
 );
 
 /**
@@ -108,9 +106,9 @@ router.post(
  *         description: Feeders retrieved successfully
  */
 router.get(
-  "/",
-  auth("ADMIN", "TECHNICIAN", "CUSTOMER"),
-  FeederController.getAllFeeders,
+	"/",
+	auth("ADMIN", "TECHNICIAN", "CUSTOMER"),
+	FeederController.getAllFeeders,
 );
 
 /**
@@ -136,12 +134,10 @@ router.get(
  *         description: Feeder not found
  */
 router.get(
-  "/:id",
-  auth("ADMIN", "TECHNICIAN", "CUSTOMER"),
-  validateRequest(
-    FeederValidation.feederIdValidationSchema,
-  ),
-  FeederController.getFeederById,
+	"/:id",
+	auth("ADMIN", "TECHNICIAN", "CUSTOMER"),
+	validateRequest(FeederValidation.feederIdValidationSchema),
+	FeederController.getFeederById,
 );
 
 /**
@@ -192,15 +188,11 @@ router.get(
  *         description: Feeder name or code already exists
  */
 router.patch(
-  "/:id",
-  auth("ADMIN"),
-  validateRequest(
-    FeederValidation.feederIdValidationSchema,
-  ),
-  validateRequest(
-    FeederValidation.updateFeederValidationSchema,
-  ),
-  FeederController.updateFeeder,
+	"/:id",
+	auth("ADMIN"),
+	validateRequest(FeederValidation.feederIdValidationSchema),
+	validateRequest(FeederValidation.updateFeederValidationSchema),
+	FeederController.updateFeeder,
 );
 
 /**
@@ -228,12 +220,10 @@ router.patch(
  *         description: Feeder contains active areas
  */
 router.delete(
-  "/:id",
-  auth("ADMIN"),
-  validateRequest(
-    FeederValidation.feederIdValidationSchema,
-  ),
-  FeederController.deleteFeeder,
+	"/:id",
+	auth("ADMIN"),
+	validateRequest(FeederValidation.feederIdValidationSchema),
+	FeederController.deleteFeeder,
 );
 
 export const FeederRoutes = router;

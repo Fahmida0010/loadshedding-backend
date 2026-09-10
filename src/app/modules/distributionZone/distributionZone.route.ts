@@ -21,13 +21,12 @@ const router = Router();
  *         description: Distribution zone created successfully
  */
 router.post(
-  "/",
-  auth("ADMIN"),
-  validateRequest(
-    DistributionZoneValidation
-      .createDistributionZoneValidationSchema,
-  ),
-  DistributionZoneController.createDistributionZone,
+	"/",
+	auth("ADMIN"),
+	validateRequest(
+		DistributionZoneValidation.createDistributionZoneValidationSchema,
+	),
+	DistributionZoneController.createDistributionZone,
 );
 
 /**
@@ -56,9 +55,9 @@ router.post(
  *         description: Distribution zones retrieved successfully
  */
 router.get(
-  "/",
-  auth("ADMIN", "TECHNICIAN", "CUSTOMER"),
-  DistributionZoneController.getAllDistributionZones,
+	"/",
+	auth("ADMIN", "TECHNICIAN", "CUSTOMER"),
+	DistributionZoneController.getAllDistributionZones,
 );
 
 /**
@@ -83,13 +82,12 @@ router.get(
  *         description: Distribution zone not found
  */
 router.get(
-  "/:id",
-  auth("ADMIN", "TECHNICIAN", "CUSTOMER"),
-  validateRequest(
-    DistributionZoneValidation
-      .distributionZoneIdValidationSchema,
-  ),
-  DistributionZoneController.getDistributionZoneById,
+	"/:id",
+	auth("ADMIN", "TECHNICIAN", "CUSTOMER"),
+	validateRequest(
+		DistributionZoneValidation.distributionZoneIdValidationSchema,
+	),
+	DistributionZoneController.getDistributionZoneById,
 );
 
 /**
@@ -114,17 +112,15 @@ router.get(
  *         description: Distribution zone not found
  */
 router.patch(
-  "/:id",
-  auth("ADMIN"),
-  validateRequest(
-    DistributionZoneValidation
-      .distributionZoneIdValidationSchema,
-  ),
-  validateRequest(
-    DistributionZoneValidation
-      .updateDistributionZoneValidationSchema,
-  ),
-  DistributionZoneController.updateDistributionZone,
+	"/:id",
+	auth("ADMIN"),
+	validateRequest(
+		DistributionZoneValidation.distributionZoneIdValidationSchema,
+	),
+	validateRequest(
+		DistributionZoneValidation.updateDistributionZoneValidationSchema,
+	),
+	DistributionZoneController.updateDistributionZone,
 );
 
 /**
@@ -149,13 +145,12 @@ router.patch(
  *         description: Zone contains substations
  */
 router.delete(
-  "/:id",
-  auth("ADMIN"),
-  validateRequest(
-    DistributionZoneValidation
-      .distributionZoneIdValidationSchema,
-  ),
-  DistributionZoneController.deleteDistributionZone,
+	"/:id",
+	auth("ADMIN"),
+	validateRequest(
+		DistributionZoneValidation.distributionZoneIdValidationSchema,
+	),
+	DistributionZoneController.deleteDistributionZone,
 );
 
 export const DistributionZoneRoutes = router;

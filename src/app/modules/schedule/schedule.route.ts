@@ -86,12 +86,10 @@ const router = Router();
  *         description: Schedule time conflict
  */
 router.post(
-  "/",
-  auth("ADMIN"),
-  validateRequest(
-    ScheduleValidation.createScheduleSchema,
-  ),
-  ScheduleController.createSchedule,
+	"/",
+	auth("ADMIN"),
+	validateRequest(ScheduleValidation.createScheduleSchema),
+	ScheduleController.createSchedule,
 );
 
 /**
@@ -159,10 +157,7 @@ router.post(
  *       200:
  *         description: Schedules retrieved successfully
  */
-router.get(
-  "/",
-  ScheduleController.getAllSchedules,
-);
+router.get("/", ScheduleController.getAllSchedules);
 
 /**
  * @openapi
@@ -184,11 +179,9 @@ router.get(
  *         description: Schedule not found
  */
 router.get(
-  "/:id",
-  validateRequest(
-    ScheduleValidation.scheduleIdParamSchema,
-  ),
-  ScheduleController.getScheduleById,
+	"/:id",
+	validateRequest(ScheduleValidation.scheduleIdParamSchema),
+	ScheduleController.getScheduleById,
 );
 
 /**
@@ -223,15 +216,11 @@ router.get(
  *         description: Schedule time conflict
  */
 router.patch(
-  "/:id",
-  auth("ADMIN"),
-  validateRequest(
-    ScheduleValidation.scheduleIdParamSchema,
-  ),
-  validateRequest(
-    ScheduleValidation.updateScheduleSchema,
-  ),
-  ScheduleController.updateSchedule,
+	"/:id",
+	auth("ADMIN"),
+	validateRequest(ScheduleValidation.scheduleIdParamSchema),
+	validateRequest(ScheduleValidation.updateScheduleSchema),
+	ScheduleController.updateSchedule,
 );
 
 /**
@@ -258,12 +247,10 @@ router.patch(
  *         description: Schedule not found
  */
 router.delete(
-  "/:id",
-  auth("ADMIN"),
-  validateRequest(
-    ScheduleValidation.scheduleIdParamSchema,
-  ),
-  ScheduleController.deleteSchedule,
+	"/:id",
+	auth("ADMIN"),
+	validateRequest(ScheduleValidation.scheduleIdParamSchema),
+	ScheduleController.deleteSchedule,
 );
 
 export const ScheduleRoutes = router;

@@ -56,12 +56,10 @@ const router = Router();
  *         description: Area name or code already exists
  */
 router.post(
-  "/",
-  auth("ADMIN"),
-  validateRequest(
-    AreaValidation.createAreaValidationSchema,
-  ),
-  AreaController.createArea,
+	"/",
+	auth("ADMIN"),
+	validateRequest(AreaValidation.createAreaValidationSchema),
+	AreaController.createArea,
 );
 
 /**
@@ -103,9 +101,9 @@ router.post(
  *         description: Areas retrieved successfully
  */
 router.get(
-  "/",
-  auth("ADMIN", "TECHNICIAN", "CUSTOMER"),
-  AreaController.getAllAreas,
+	"/",
+	auth("ADMIN", "TECHNICIAN", "CUSTOMER"),
+	AreaController.getAllAreas,
 );
 
 /**
@@ -131,12 +129,10 @@ router.get(
  *         description: Area not found
  */
 router.get(
-  "/:id",
-  auth("ADMIN", "TECHNICIAN", "CUSTOMER"),
-  validateRequest(
-    AreaValidation.areaIdValidationSchema,
-  ),
-  AreaController.getAreaById,
+	"/:id",
+	auth("ADMIN", "TECHNICIAN", "CUSTOMER"),
+	validateRequest(AreaValidation.areaIdValidationSchema),
+	AreaController.getAreaById,
 );
 
 /**
@@ -187,15 +183,11 @@ router.get(
  *         description: Area name or code already exists
  */
 router.patch(
-  "/:id",
-  auth("ADMIN"),
-  validateRequest(
-    AreaValidation.areaIdValidationSchema,
-  ),
-  validateRequest(
-    AreaValidation.updateAreaValidationSchema,
-  ),
-  AreaController.updateArea,
+	"/:id",
+	auth("ADMIN"),
+	validateRequest(AreaValidation.areaIdValidationSchema),
+	validateRequest(AreaValidation.updateAreaValidationSchema),
+	AreaController.updateArea,
 );
 
 /**
@@ -223,12 +215,10 @@ router.patch(
  *         description: Area contains related records
  */
 router.delete(
-  "/:id",
-  auth("ADMIN"),
-  validateRequest(
-    AreaValidation.areaIdValidationSchema,
-  ),
-  AreaController.deleteArea,
+	"/:id",
+	auth("ADMIN"),
+	validateRequest(AreaValidation.areaIdValidationSchema),
+	AreaController.deleteArea,
 );
 
 export const AreaRoutes = router;

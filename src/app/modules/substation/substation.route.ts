@@ -55,12 +55,10 @@ const router = Router();
  *         description: Substation name or code already exists
  */
 router.post(
-  "/",
-  auth("ADMIN"),
-  validateRequest(
-    SubstationValidation.createSubstationValidationSchema,
-  ),
-  SubstationController.createSubstation,
+	"/",
+	auth("ADMIN"),
+	validateRequest(SubstationValidation.createSubstationValidationSchema),
+	SubstationController.createSubstation,
 );
 
 /**
@@ -97,9 +95,9 @@ router.post(
  *         description: Substations retrieved successfully
  */
 router.get(
-  "/",
-  auth("ADMIN", "TECHNICIAN", "CUSTOMER"),
-  SubstationController.getAllSubstations,
+	"/",
+	auth("ADMIN", "TECHNICIAN", "CUSTOMER"),
+	SubstationController.getAllSubstations,
 );
 
 /**
@@ -125,12 +123,10 @@ router.get(
  *         description: Substation not found
  */
 router.get(
-  "/:id",
-  auth("ADMIN", "TECHNICIAN", "CUSTOMER"),
-  validateRequest(
-    SubstationValidation.substationIdValidationSchema,
-  ),
-  SubstationController.getSubstationById,
+	"/:id",
+	auth("ADMIN", "TECHNICIAN", "CUSTOMER"),
+	validateRequest(SubstationValidation.substationIdValidationSchema),
+	SubstationController.getSubstationById,
 );
 
 /**
@@ -178,15 +174,11 @@ router.get(
  *         description: Substation name or code already exists
  */
 router.patch(
-  "/:id",
-  auth("ADMIN"),
-  validateRequest(
-    SubstationValidation.substationIdValidationSchema,
-  ),
-  validateRequest(
-    SubstationValidation.updateSubstationValidationSchema,
-  ),
-  SubstationController.updateSubstation,
+	"/:id",
+	auth("ADMIN"),
+	validateRequest(SubstationValidation.substationIdValidationSchema),
+	validateRequest(SubstationValidation.updateSubstationValidationSchema),
+	SubstationController.updateSubstation,
 );
 
 /**
@@ -214,12 +206,10 @@ router.patch(
  *         description: Substation contains active feeders
  */
 router.delete(
-  "/:id",
-  auth("ADMIN"),
-  validateRequest(
-    SubstationValidation.substationIdValidationSchema,
-  ),
-  SubstationController.deleteSubstation,
+	"/:id",
+	auth("ADMIN"),
+	validateRequest(SubstationValidation.substationIdValidationSchema),
+	SubstationController.deleteSubstation,
 );
 
 export const SubstationRoutes = router;
