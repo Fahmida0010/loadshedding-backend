@@ -7,6 +7,7 @@ import { OutageRoutes } from "../modules/outage/outage.route";
 import { ScheduleRoutes } from "../modules/schedule/schedule.route";
 import { SubstationRoutes } from "../modules/substation/substation.route";
 import { TechnicianAssignmentRoutes } from "../modules/assignment/assignment.route";
+import { AdminRoutes } from "../modules/admin/admin.route";
 
 const router = Router();
 
@@ -15,6 +16,10 @@ const moduleRoutes = [
 		path: "/auth",
 		route: AuthRoutes,
 	},
+	  {
+    path: "/admin",
+    route: AdminRoutes,
+  },
 	{
 		path: "/distribution-zones",
 		route: DistributionZoneRoutes,
