@@ -388,7 +388,7 @@ const getDashboardStats = async () => {
             code: true,
           },
         },
-        reporter: {
+        reportedBy: {
           select: {
             id: true,
             name: true,
