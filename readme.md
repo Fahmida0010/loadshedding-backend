@@ -92,7 +92,6 @@ Distribution Zone
 | **Schedules** | `/schedules` | Manage load-shedding schedules |
 | **Unexpected Outages** | `/unexpected-outages` | Report and track unplanned outages |
 | **Assignments** | `/assignments` | Assign technicians and track repair work |
-| **Bills** | `/bills` | Manage customer electricity bills |
 | **Payments** | `/payments` | Initiate and verify SSLCommerz payments |
 | **Admin** | `/admin` | Administrative system operations |
 
