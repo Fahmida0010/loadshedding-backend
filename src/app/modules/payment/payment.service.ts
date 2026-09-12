@@ -189,7 +189,7 @@ const handleWebhook = async (
           ? "CANCELLED"
           : "FAILED",
       billId: bill.id,
-      transactionId,
+      transactionId: bill.transactionId,
     };
   }
 
@@ -260,6 +260,8 @@ const handleWebhook = async (
   return {
     success: true,
     status: "PAID",
+    billId: updatedBill?.id,
+    transactionId: updatedBill?.transactionId,
     bill: updatedBill,
   };
 };

@@ -31,53 +31,31 @@ const webhook = catchAsync(
       callbackType,
     );
 
-    /*
-     * IPN is server-to-server, তাই JSON response দেওয়া হবে।
-     */
-    if (callbackType === "ipn") {
+    if (result.status === "PAID") {
       res.status(200).json({
         success: true,
-        message: "Payment notification received",
+        message: "Payment completed successfully",
         data: result,
       });
 
       return;
     }
 
-    /*
-     * Customer browser callback হলে frontend-এ পাঠানো হবে।
-     */
-    const redirectUrl = new URL(
-      "/payment/result",
-      process.env.FRONTEND_URL ||
-        "http://localhost:3000",
-    );
+    if (result.status === "CANCELLED") {
+      res.status(200).json({
+        success: false,
+        message: "Payment was cancelled",
+        data: result,
+      });
 
-    redirectUrl.searchParams.set(
-      "status",
-      result.status,
-    );
-
-    redirectUrl.searchParams.set(
-      "transactionId",
-      result.transactionId,
-    );
-
-    if ("billId" in result && result.billId) {
-      redirectUrl.searchParams.set(
-        "billId",
-        result.billId,
-      );
+      return;
     }
 
-    if ("bill" in result && result.bill?.id) {
-      redirectUrl.searchParams.set(
-        "billId",
-        result.bill.id,
-      );
-    }
-
-    res.redirect(303, redirectUrl.toString());
+    res.status(400).json({
+      success: false,
+      message: "Payment failed",
+      data: result,
+    });
   },
 );
 
