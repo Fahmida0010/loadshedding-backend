@@ -80,7 +80,7 @@ Distribution Zone
 ## 🌐 API Endpoints Overview
 
 * **Base URL:** `http://localhost:5000/api/v1`
-* **API Documentation (Swagger):** `http://localhost:5000/api-docs`
+* **API Documentation (Swagger):** `https://loadshedding-backend.vercel.app/api-docs`
 
 | Module | Base Route | Purpose |
 | --- | --- | --- |
@@ -90,7 +90,7 @@ Distribution Zone
 | **Feeders** | `/feeders` | Manage feeders connected to substations |
 | **Areas** | `/areas` | Manage customer service areas |
 | **Schedules** | `/schedules` | Manage load-shedding schedules |
-| **Unexpected Outages** | `/unexpected-outages` | Report and track unplanned outages |
+| **Unexpected Outages** | `/outages` | Report and track unplanned outages |
 | **Assignments** | `/assignments` | Assign technicians and track repair work |
 | **Payments** | `/payments` | Initiate and verify SSLCommerz payments |
 | **Admin** | `/admin` | Administrative system operations |
