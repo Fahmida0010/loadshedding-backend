@@ -48,12 +48,10 @@ const router = Router();
  *         description: Bill not found
  */
 router.post(
-  "/initiate",
-  auth(UserRole.CUSTOMER),
-  validateRequest(
-    PaymentValidation.initiatePaymentSchema,
-  ),
-  PaymentController.initiatePayment,
+	"/initiate",
+	auth(UserRole.CUSTOMER),
+	validateRequest(PaymentValidation.initiatePaymentSchema),
+	PaymentController.initiatePayment,
 );
 
 /**
@@ -84,10 +82,7 @@ router.post(
  *       303:
  *         description: Redirected to frontend result page
  */
-router.post(
-  "/webhook",
-  PaymentController.webhook,
-);
+router.post("/webhook", PaymentController.webhook);
 
 /**
  * @openapi
@@ -114,15 +109,10 @@ router.post(
  *         description: Payment information not found
  */
 router.get(
-  "/:id",
-  auth(
-    UserRole.ADMIN,
-    UserRole.CUSTOMER,
-  ),
-  validateRequest(
-    PaymentValidation.getPaymentSchema,
-  ),
-  PaymentController.getPaymentById,
+	"/:id",
+	auth(UserRole.ADMIN, UserRole.CUSTOMER),
+	validateRequest(PaymentValidation.getPaymentSchema),
+	PaymentController.getPaymentById,
 );
 
 export const PaymentRoutes = router;

@@ -1,9 +1,8 @@
 import { Router } from "express";
 import { auth } from "../../middlewares/auth";
 import { validateRequest } from "../../middlewares/validateRequest";
-import { TechnicianAssignmentValidation } from "./assignment.validation";
 import { TechnicianAssignmentController } from "./assignment.controller";
-
+import { TechnicianAssignmentValidation } from "./assignment.validation";
 
 const router = Router();
 
@@ -175,18 +174,15 @@ const router = Router();
  *         description: Assignments retrieved successfully
  */
 router
-  .route("/")
-  .post(
-    auth("ADMIN"),
-    validateRequest(
-      TechnicianAssignmentValidation.createTechnicianAssignmentSchema,
-    ),
-    TechnicianAssignmentController.createAssignment,
-  )
-  .get(
-    auth("ADMIN"),
-    TechnicianAssignmentController.getAllAssignments,
-  );
+	.route("/")
+	.post(
+		auth("ADMIN"),
+		validateRequest(
+			TechnicianAssignmentValidation.createTechnicianAssignmentSchema,
+		),
+		TechnicianAssignmentController.createAssignment,
+	)
+	.get(auth("ADMIN"), TechnicianAssignmentController.getAllAssignments);
 
 /**
  * @openapi
@@ -239,9 +235,9 @@ router
  *         description: Technician assignments retrieved successfully
  */
 router.get(
-  "/my-assignments",
-  auth("TECHNICIAN"),
-  TechnicianAssignmentController.getMyAssignments,
+	"/my-assignments",
+	auth("TECHNICIAN"),
+	TechnicianAssignmentController.getMyAssignments,
 );
 
 /**
@@ -275,14 +271,112 @@ router.get(
  *         description: Assignment not found
  */
 router.patch(
-  "/:id/status",
-  auth("TECHNICIAN"),
-  validateRequest(
-    TechnicianAssignmentValidation.updateAssignmentStatusSchema,
-  ),
-  TechnicianAssignmentController.updateAssignmentStatus,
+	"/:id/status",
+	auth("TECHNICIAN"),
+	validateRequest(TechnicianAssignmentValidation.updateAssignmentStatusSchema),
+	TechnicianAssignmentController.updateAssignmentStatus,
+);
+/**
+ * @openapi
+ * /assignments/{id}/repair-updates:
+ *   post:
+ *     tags:
+ *       - Technician Assignments
+ *     summary: Add a repair progress update
+ *     description: The assigned technician adds a repair note and starts repair work.
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: Technician assignment ID
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - note
+ *             properties:
+ *               note:
+ *                 type: string
+ *                 example: Damaged feeder cable identified and replacement work started.
+ *     responses:
+ *       201:
+ *         description: Repair update created successfully
+ *       400:
+ *         description: Invalid assignment state
+ *       403:
+ *         description: Technician access required
+ *       404:
+ *         description: Assignment not found
+ */
+router.post(
+	"/:id/repair-updates",
+	auth("TECHNICIAN"),
+	validateRequest(TechnicianAssignmentValidation.createRepairUpdateSchema),
+	TechnicianAssignmentController.createRepairUpdate,
 );
 
+/**
+ * @openapi
+ * /assignments/{id}/resolve:
+ *   post:
+ *     tags:
+ *       - Technician Assignments
+ *     summary: Resolve an outage and record power restoration
+ *     description: Creates an outage resolution and completes the technician assignment.
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: Technician assignment ID
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - description
+ *             properties:
+ *               description:
+ *                 type: string
+ *                 example: Power supply has been restored successfully.
+ *               actionTaken:
+ *                 type: string
+ *                 example: Replaced damaged cable and tested the feeder connection.
+ *               durationMinutes:
+ *                 type: integer
+ *                 example: 75
+ *     responses:
+ *       201:
+ *         description: Outage resolved successfully
+ *       400:
+ *         description: Assignment is not in progress
+ *       403:
+ *         description: Technician access required
+ *       404:
+ *         description: Assignment not found
+ *       409:
+ *         description: Outage already has a resolution
+ */
+router.post(
+	"/:id/resolve",
+	auth("TECHNICIAN"),
+	validateRequest(TechnicianAssignmentValidation.resolveOutageSchema),
+	TechnicianAssignmentController.resolveOutage,
+);
 /**
  * @openapi
  * /assignments/{id}:
@@ -355,21 +449,18 @@ router.patch(
  *         description: Assignment deleted successfully
  */
 router
-  .route("/:id")
-  .get(
-    auth("ADMIN", "TECHNICIAN"),
-    TechnicianAssignmentController.getAssignmentById,
-  )
-  .patch(
-    auth("ADMIN"),
-    validateRequest(
-      TechnicianAssignmentValidation.updateTechnicianAssignmentSchema,
-    ),
-    TechnicianAssignmentController.updateAssignment,
-  )
-  .delete(
-    auth("ADMIN"),
-    TechnicianAssignmentController.deleteAssignment,
-  );
+	.route("/:id")
+	.get(
+		auth("ADMIN", "TECHNICIAN"),
+		TechnicianAssignmentController.getAssignmentById,
+	)
+	.patch(
+		auth("ADMIN"),
+		validateRequest(
+			TechnicianAssignmentValidation.updateTechnicianAssignmentSchema,
+		),
+		TechnicianAssignmentController.updateAssignment,
+	)
+	.delete(auth("ADMIN"), TechnicianAssignmentController.deleteAssignment);
 
 export const TechnicianAssignmentRoutes = router;

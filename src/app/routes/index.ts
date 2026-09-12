@@ -1,14 +1,14 @@
 import { Router } from "express";
+import { AdminRoutes } from "../modules/admin/admin.route";
 import { AreaRoutes } from "../modules/area/area.route";
+import { TechnicianAssignmentRoutes } from "../modules/assignment/assignment.route";
 import { AuthRoutes } from "../modules/auth/auth.route";
 import { DistributionZoneRoutes } from "../modules/distributionZone/distributionZone.route";
 import { FeederRoutes } from "../modules/feeder/feeder.route";
 import { OutageRoutes } from "../modules/outage/outage.route";
+import { PaymentRoutes } from "../modules/payment/payment.route";
 import { ScheduleRoutes } from "../modules/schedule/schedule.route";
 import { SubstationRoutes } from "../modules/substation/substation.route";
-import { TechnicianAssignmentRoutes } from "../modules/assignment/assignment.route";
-import { AdminRoutes } from "../modules/admin/admin.route";
-import { PaymentRoutes } from "../modules/payment/payment.route";
 
 const router = Router();
 
@@ -17,10 +17,10 @@ const moduleRoutes = [
 		path: "/auth",
 		route: AuthRoutes,
 	},
-	  {
-    path: "/admin",
-    route: AdminRoutes,
-  },
+	{
+		path: "/admin",
+		route: AdminRoutes,
+	},
 	{
 		path: "/distribution-zones",
 		route: DistributionZoneRoutes,
@@ -46,13 +46,13 @@ const moduleRoutes = [
 		route: OutageRoutes,
 	},
 	{
-    path: "/assignments",
-    route: TechnicianAssignmentRoutes,
-  },
-    {
-    path: "/payments",
-    route: PaymentRoutes,
-  },
+		path: "/assignments",
+		route: TechnicianAssignmentRoutes,
+	},
+	{
+		path: "/payments",
+		route: PaymentRoutes,
+	},
 ];
 
 moduleRoutes.forEach(({ path, route }) => {

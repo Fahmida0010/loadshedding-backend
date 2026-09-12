@@ -101,11 +101,7 @@ const router = Router();
  *       403:
  *         description: Admin access required
  */
-router.get(
-  "/users",
-  auth("ADMIN"),
-  AdminController.getAllUsers,
-);
+router.get("/users", auth("ADMIN"), AdminController.getAllUsers);
 
 /**
  * @openapi
@@ -142,12 +138,10 @@ router.get(
  *         description: User not found
  */
 router.patch(
-  "/users/:id/role",
-  auth("ADMIN"),
-  validateRequest(
-    AdminValidation.updateUserRoleSchema,
-  ),
-  AdminController.updateUserRole,
+	"/users/:id/role",
+	auth("ADMIN"),
+	validateRequest(AdminValidation.updateUserRoleSchema),
+	AdminController.updateUserRole,
 );
 
 /**
@@ -168,9 +162,9 @@ router.patch(
  *         description: Admin access required
  */
 router.get(
-  "/dashboard-stats",
-  auth("ADMIN"),
-  AdminController.getDashboardStats,
+	"/dashboard-stats",
+	auth("ADMIN"),
+	AdminController.getDashboardStats,
 );
 
 /**
@@ -244,10 +238,6 @@ router.get(
  *       403:
  *         description: Admin access required
  */
-router.get(
-  "/audit-logs",
-  auth("ADMIN"),
-  AdminController.getAuditLogs,
-);
+router.get("/audit-logs", auth("ADMIN"), AdminController.getAuditLogs);
 
 export const AdminRoutes = router;
