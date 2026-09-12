@@ -80,6 +80,7 @@ enum UserRole {
   TECHNICIAN
   CUSTOMER
 }
+
  enum BillStatus {
   UNPAID
   PAID

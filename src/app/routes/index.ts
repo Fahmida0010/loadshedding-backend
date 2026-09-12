@@ -8,6 +8,7 @@ import { ScheduleRoutes } from "../modules/schedule/schedule.route";
 import { SubstationRoutes } from "../modules/substation/substation.route";
 import { TechnicianAssignmentRoutes } from "../modules/assignment/assignment.route";
 import { AdminRoutes } from "../modules/admin/admin.route";
+import { PaymentRoutes } from "../modules/payment/payment.route";
 
 const router = Router();
 
@@ -47,6 +48,10 @@ const moduleRoutes = [
 	{
     path: "/assignments",
     route: TechnicianAssignmentRoutes,
+  },
+    {
+    path: "/payments",
+    route: PaymentRoutes,
   },
 ];
 
