@@ -79,8 +79,8 @@ Distribution Zone
 
 ## 🌐 API Endpoints Overview
 
-* **Base URL:** `http://localhost:5000/api/v1`
-* **API Documentation (Swagger):** `https://loadshedding-backend.vercel.app/api-docs`
+* **Base URL:** `http://localhost:5000 or https://loadshedding-backend-eight.vercel.app`
+* **API Documentation (Swagger):** `https://loadshedding-backend-eight.vercel.app/api-docs`
 
 | Module | Base Route | Purpose |
 | --- | --- | --- |
