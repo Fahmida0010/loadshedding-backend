@@ -8,6 +8,7 @@ import swaggerUi from "swagger-ui-express";
 import { globalErrorHandler } from "./app/middlewares/globalErrorhandler";
 import { notFound } from "./app/middlewares/notFound";
 import routes from "./app/routes";
+import path from "node:path";
 
 const app = express();
 
@@ -65,10 +66,16 @@ const swaggerOptions: swaggerJsdoc.Options = {
 	},
 
 	apis: [
-		"./src/app/routes/**/*.ts",
-		"./src/app/modules/**/*.route.ts",
-		"./src/app.ts",
-	],
+	path.join(
+		process.cwd(),
+		"src/app/modules/**/*.route.ts",
+	),
+	path.join(
+		process.cwd(),
+		"src/app/routes/**/*.ts",
+	),
+	path.join(process.cwd(), "src/app.ts"),
+],
 };
 
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
