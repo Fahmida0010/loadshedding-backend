@@ -13,7 +13,11 @@ const app = express();
 
 const PORT = Number(process.env.PORT) || 5000;
 
-app.use(helmet());
+app.use(
+	helmet({
+		contentSecurityPolicy: false,
+	}),
+);
 
 app.use(
 	cors({
@@ -44,7 +48,7 @@ const swaggerOptions: swaggerJsdoc.Options = {
 
 		servers: [
 			{
-				url: `http://localhost:${PORT}/api/v1`,
+				url: `${process.env.BACKEND_URL}/api/v1`,
 				description: "Local development server",
 			},
 		],
@@ -69,7 +73,11 @@ const swaggerOptions: swaggerJsdoc.Options = {
 
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
 
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use(
+	"/api-docs",
+	swaggerUi.serveFiles(swaggerSpec),
+	swaggerUi.setup(swaggerSpec),
+);
 
 /**
  * @openapi
