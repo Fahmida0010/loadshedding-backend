@@ -240,4 +240,46 @@ router.get(
  */
 router.get("/audit-logs", auth("ADMIN"), AdminController.getAuditLogs);
 
+/**
+ * @openapi
+ * /admin/users/{id}/status:
+ *   patch:
+ *     tags:
+ *       - Admin
+ *     summary: Update a user's status (Block/Unblock)
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - status
+ *             properties:
+ *               status:
+ *                 type: string
+ *                 enum: [ACTIVE, INACTIVE, BLOCKED]
+ *     responses:
+ *       200:
+ *         description: User status updated successfully
+ *       400:
+ *         description: Invalid status or self-action attempted
+ *       404:
+ *         description: User not found
+ */
+router.patch(
+    "/users/:id/status",
+    auth("ADMIN"),
+    validateRequest(AdminValidation.updateUserStatusSchema),
+    AdminController.updateUserStatus,
+);
 export const AdminRoutes = router;
