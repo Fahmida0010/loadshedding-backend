@@ -3,6 +3,8 @@ import { catchAsync } from "../../utils/catchAsyc";
 import { sendResponse } from "../../utils/sendResponse";
 import type { IAuditLogQuery, IUserQuery } from "./admin.interface";
 import { AdminService } from "./admin.service";
+import httpStatus from "http-status";
+
 
 const getAllUsers: RequestHandler = catchAsync(async (req, res) => {
 	const result = await AdminService.getAllUsers(req.query as IUserQuery);
