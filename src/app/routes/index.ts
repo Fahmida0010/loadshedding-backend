@@ -9,6 +9,7 @@ import { OutageRoutes } from "../modules/outage/outage.route";
 import { PaymentRoutes } from "../modules/payment/payment.route";
 import { ScheduleRoutes } from "../modules/schedule/schedule.route";
 import { SubstationRoutes } from "../modules/substation/substation.route";
+import { BillRoutes } from "../modules/bill/bill.route";
 
 
 const router = Router();
@@ -53,6 +54,10 @@ const moduleRoutes = [
 	{
 		path: "/payments",
 		route: PaymentRoutes,
+	},
+	{
+		path: "/bills",
+		route: BillRoutes,
 	},
 	
 ];
