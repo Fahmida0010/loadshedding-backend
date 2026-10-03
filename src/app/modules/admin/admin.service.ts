@@ -1,6 +1,7 @@
 import type { Prisma } from "../../../generated/prisma/client";
 import { prisma } from "../../config/prisma";
 import { AppError } from "../../utils/AppError";
+import httpStatus from "http-status";
 
 import type {
 	IAuditLogQuery,

@@ -10,6 +10,7 @@ import { PaymentRoutes } from "../modules/payment/payment.route";
 import { ScheduleRoutes } from "../modules/schedule/schedule.route";
 import { SubstationRoutes } from "../modules/substation/substation.route";
 
+
 const router = Router();
 
 const moduleRoutes = [
@@ -53,6 +54,7 @@ const moduleRoutes = [
 		path: "/payments",
 		route: PaymentRoutes,
 	},
+	
 ];
 
 moduleRoutes.forEach(({ path, route }) => {
