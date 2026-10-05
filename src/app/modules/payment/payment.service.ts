@@ -283,8 +283,26 @@ const getPaymentById = async (
 	};
 };
 
+const getAllPaymentsFromDB = async () => {
+  const result = await prisma.bill.findMany({
+    include: {
+      user: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+        },
+      },
+    },
+    orderBy: {
+      dueDate: "desc",
+    },
+  });
+  return result;
+};
 export const PaymentService = {
 	initiatePayment,
 	handleWebhook,
 	getPaymentById,
+	getAllPaymentsFromDB,
 };

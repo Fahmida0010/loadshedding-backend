@@ -51,9 +51,23 @@ const getPaymentById = catchAsync(async (req: Request, res: Response) => {
         data: result,
     });
 });
+// payment.controller.ts এর মধ্যে
+const getAllPayments = async (req: Request, res: Response) => {
+  try {
+    const result = await PaymentService.getAllPaymentsFromDB(); // আপনার সার্ভিস লজিক অনুযায়ী
+    res.status(200).json({
+      success: true,
+      message: "Payments retrieved successfully",
+      data: result,
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
 
 export const PaymentController = {
     initiatePayment,
     webhook,
     getPaymentById,
+    getAllPayments, 
 };

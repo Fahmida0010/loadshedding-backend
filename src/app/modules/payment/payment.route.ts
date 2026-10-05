@@ -115,4 +115,23 @@ router.get(
 	PaymentController.getPaymentById,
 );
 
+/**
+ * @openapi
+ * /payments:
+ *   get:
+ *     summary: Get all payment/bill records (Admin)
+ *     tags:
+ *       - Payments
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of payments retrieved successfully
+ */
+router.get(
+    "/",
+    auth(UserRole.ADMIN), // শুধুমাত্র অ্যাডমিন দেখতে পারবে
+    PaymentController.getAllPayments // আপনার কন্ট্রোলারে এই ফাংশনটি থাকতে হবে
+);
+
 export const PaymentRoutes = router;
