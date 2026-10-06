@@ -121,20 +121,28 @@ const getCurrentUser = catchAsync(async (req: Request, res: Response) => {
 });
 
 const updateProfile = catchAsync(async (req: Request, res: Response) => {
-	if (!req.user) {
-		throw new AppError(401, "Authentication is required");
-	}
+    if (!req.user) {
+        throw new AppError(401, "Authentication is required");
+    }
 
-	const result = await AuthService.updateProfile(req.user.userId, req.body);
+    // যদি কোনো নতুন ফাইল আপলোড করা হয়ে থাকে, তবে সেটি req.body-তে যুক্ত করে দিন
+    // (আপনার প্রজেক্টের ফাইল আপলোড লজিক অনুযায়ী পাথ সেট করতে হবে, যেমন Cloudinary বা Local storage পাথ)
+    const updateData = { ...req.body };
+    
+    if (req.file) {
+        // সাধারণত multer-cloudinary বা local upload-এর মাধ্যমে ফাইলের পাথ বা URL পাওয়া যায়
+        updateData.profileImage = req.file.path || req.file.filename; 
+    }
 
-	sendResponse(res, {
-		statusCode: 200,
-		success: true,
-		message: "Profile updated successfully",
-		data: result,
-	});
+    const result = await AuthService.updateProfile(req.user.userId, updateData);
+
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: "Profile updated successfully",
+        data: result,
+    });
 });
-
 const changePassword = catchAsync(async (req: Request, res: Response) => {
 	if (!req.user) {
 		throw new AppError(401, "Authentication is required");

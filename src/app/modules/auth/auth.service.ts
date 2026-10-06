@@ -405,52 +405,62 @@ const getCurrentUser = async (userId: string) => {
 };
 
 const updateProfile = async (userId: string, payload: IUpdateProfile) => {
-	const existingUser = await prisma.user.findFirst({
-		where: {
-			id: userId,
-			deletedAt: null,
-		},
-		select: {
-			id: true,
-		},
-	});
+    const existingUser = await prisma.user.findFirst({
+        where: {
+            id: userId,
+            deletedAt: null,
+        },
+        select: {
+            id: true,
+        },
+    });
 
-	if (!existingUser) {
-		throw new AppError(404, "User not found");
-	}
+    if (!existingUser) {
+        throw new AppError(404, "User not found");
+    }
 
-	if (payload.areaId) {
-		const area = await prisma.area.findFirst({
-			where: {
-				id: payload.areaId,
-				deletedAt: null,
-			},
-			select: {
-				id: true,
-			},
-		});
+    if (payload.areaId) {
+        const area = await prisma.area.findFirst({
+            where: {
+                id: payload.areaId,
+                deletedAt: null,
+            },
+            select: {
+                id: true,
+            },
+        });
 
-		if (!area) {
-			throw new AppError(404, "Area not found");
-		}
-	}
+        if (!area) {
+            throw new AppError(404, "Area not found");
+        }
+    }
 
-	const updatedUser = await prisma.user.update({
-		where: {
-			id: userId,
-		},
-		data: {
-			name: payload.name,
-			phone: payload.phone,
-			profileImage: payload.profileImage,
-			areaId: payload.areaId,
-		},
-		select: userSelect,
-	});
+    // Profile image path clean korar logic (Windows absolute path theke relative path-e rupantor)
+    let profileImage = payload.profileImage;
+    if (profileImage) {
+        if (profileImage.includes('public')) {
+            const parts = profileImage.split('public');
+            profileImage = parts[1].replace(/\\/g, '/'); // Backslash ke forward slash-e convert kora
+        } else if (profileImage.includes('\\')) {
+            profileImage = profileImage.replace(/\\/g, '/');
+        }
+    }
 
-	return updatedUser;
+    const updatedUser = await prisma.user.update({
+        where: {
+            id: userId,
+        },
+        data: {
+            name: payload.name,
+            phone: payload.phone,
+            profileImage: profileImage, // Cleaned relative path save hobe
+            areaId: payload.areaId,
+        },
+        select: userSelect,
+    });
+
+    return updatedUser;
 };
-
 const changePassword = async (
 	userId: string,
 	payload: IChangePassword,
