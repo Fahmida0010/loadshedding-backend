@@ -100,10 +100,7 @@ router.post(
  *       200:
  *         description: Areas retrieved successfully
  */
-router.get(
-	"/",
-	auth("ADMIN", "TECHNICIAN", "CUSTOMER"),
-	AreaController.getAllAreas,
+router.get("/",AreaController.getAllAreas,
 );
 
 /**
