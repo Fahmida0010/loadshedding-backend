@@ -1,13 +1,11 @@
 import crypto from "node:crypto";
 import bcrypt from "bcryptjs";
-import { OAuth2Client } from "google-auth-library";
 import jwt, { type SignOptions } from "jsonwebtoken";
 
 import { prisma } from "../../config/prisma";
 import { AppError } from "../../utils/AppError";
 import type {
 	IChangePassword,
-	IGoogleLogin,
 	IJwtPayload,
 	ILoginUser,
 	IRefreshTokenPayload,
@@ -29,15 +27,13 @@ const JWT_ACCESS_SECRET = getRequiredEnv("JWT_ACCESS_SECRET");
 
 const JWT_REFRESH_SECRET = getRequiredEnv("JWT_REFRESH_SECRET");
 
-const GOOGLE_CLIENT_ID = getRequiredEnv("GOOGLE_CLIENT_ID");
-
 const JWT_ACCESS_EXPIRES_IN = (process.env.JWT_ACCESS_EXPIRES_IN ??
 	"15m") as SignOptions["expiresIn"];
 
 const JWT_REFRESH_EXPIRES_IN = (process.env.JWT_REFRESH_EXPIRES_IN ??
 	"30d") as SignOptions["expiresIn"];
 
-const googleClient = new OAuth2Client(GOOGLE_CLIENT_ID);
+
 
 const userSelect = {
 	id: true,
