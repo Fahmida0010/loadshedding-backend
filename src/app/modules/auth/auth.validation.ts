@@ -51,12 +51,6 @@ const loginUserValidationSchema = z.object({
 	}),
 });
 
-const googleLoginValidationSchema = z.object({
-	body: z.object({
-		idToken: z.string().min(1, "Google ID token is required"),
-	}),
-});
-
 const refreshTokenValidationSchema = z.object({
 	body: z
 		.object({
@@ -121,7 +115,6 @@ const changePasswordValidationSchema = z.object({
 export const AuthValidation = {
 	registerUserValidationSchema,
 	loginUserValidationSchema,
-	googleLoginValidationSchema,
 	refreshTokenValidationSchema,
 	logoutValidationSchema,
 	updateProfileValidationSchema,

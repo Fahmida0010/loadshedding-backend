@@ -6,6 +6,7 @@ import { auth } from "../../middlewares/auth";
 import { validateRequest } from "../../middlewares/validateRequest";
 import { AuthController } from "./auth.controller";
 import { AuthValidation } from "./auth.validation";
+import cloudinaryUpload from "../../middlewares/cloudinaryUpload";
 
 const router = Router();
 
@@ -146,11 +147,6 @@ router.post(
  *       401:
  *         description: Invalid Google token
  */
-router.post(
-	"/google",
-	validateRequest(AuthValidation.googleLoginValidationSchema),
-	AuthController.loginWithGoogle,
-);
 
 /**
  * @openapi
@@ -268,7 +264,7 @@ router.get(
 router.patch(
 	"/me",
 	auth("ADMIN", "TECHNICIAN", "CUSTOMER"),
-	upload.single('profileImage'),
+	cloudinaryUpload.single('profileImage'),
 	validateRequest(AuthValidation.updateProfileValidationSchema),
 	AuthController.updateProfile,
 );

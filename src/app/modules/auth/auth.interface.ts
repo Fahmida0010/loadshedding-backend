@@ -14,9 +14,6 @@ export interface ILoginUser {
 	password: string;
 }
 
-export interface IGoogleLogin {
-	idToken: string;
-}
 
 export interface IUpdateProfile {
 	name?: string;

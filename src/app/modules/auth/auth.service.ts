@@ -240,83 +240,6 @@ const loginUser = async (payload: ILoginUser) => {
 	};
 };
 
-const loginWithGoogle = async (payload: IGoogleLogin) => {
-	let googlePayload;
-
-	try {
-		const ticket = await googleClient.verifyIdToken({
-			idToken: payload.idToken,
-			audience: GOOGLE_CLIENT_ID,
-		});
-
-		googlePayload = ticket.getPayload();
-	} catch {
-		throw new AppError(401, "Invalid Google ID token");
-	}
-
-	if (
-		!googlePayload?.sub ||
-		!googlePayload.email ||
-		!googlePayload.email_verified
-	) {
-		throw new AppError(401, "Google email could not be verified");
-	}
-
-	const email = googlePayload.email.toLowerCase();
-
-	const existingUser = await prisma.user.findUnique({
-		where: {
-			email,
-		},
-	});
-
-	if (existingUser?.deletedAt) {
-		throw new AppError(403, "Your account is unavailable");
-	}
-
-	if (existingUser?.status === "BLOCKED") {
-		throw new AppError(403, "Your account has been blocked");
-	}
-
-	if (existingUser?.status === "INACTIVE") {
-		throw new AppError(403, "Your account is inactive");
-	}
-
-	let user;
-
-	if (!existingUser) {
-		user = await prisma.user.create({
-			data: {
-				name: googlePayload.name ?? email.split("@")[0],
-				email,
-				password: null,
-				googleId: googlePayload.sub,
-				profileImage: googlePayload.picture,
-				authProvider: "GOOGLE",
-				role: "CUSTOMER",
-			},
-			select: userSelect,
-		});
-	} else {
-		user = await prisma.user.update({
-			where: {
-				id: existingUser.id,
-			},
-			data: {
-				googleId: googlePayload.sub,
-				profileImage: existingUser.profileImage ?? googlePayload.picture,
-			},
-			select: userSelect,
-		});
-	}
-
-	const tokens = await createAuthTokens(user);
-
-	return {
-		user,
-		...tokens,
-	};
-};
 
 const refreshAccessToken = async (rawRefreshToken: string) => {
 	const decodedToken = verifyRefreshToken(rawRefreshToken);
@@ -532,7 +455,6 @@ const changePassword = async (
 export const AuthService = {
 	registerUser,
 	loginUser,
-	loginWithGoogle,
 	refreshAccessToken,
 	logoutUser,
 	getCurrentUser,
