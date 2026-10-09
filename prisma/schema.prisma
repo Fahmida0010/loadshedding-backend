@@ -7,10 +7,6 @@ datasource db {
   provider = "postgresql"
 }
 
-// ======================================================
-// ENUMS
-// ======================================================
-
 
 enum UserStatus {
   ACTIVE
@@ -147,7 +143,6 @@ model RefreshToken {
 
 // ======================================================
 // BILLING AND PAYMENTS
-// ======================================================
 
 model Bill {
   id            String     @id @default(uuid())
@@ -175,7 +170,7 @@ model Bill {
   @@map("bills")
 }
 
-// POWER DISTRIBUTION STRUCTURE  Distribution Zone → Substation → Feeder → Area
+
 
 model DistributionZone {
   id          String  @id @default(uuid())
@@ -258,9 +253,6 @@ model Area {
   @@map("areas")
 }
 
-// ======================================================
-// LOAD-SHEDDING AND PLANNED OUTAGE SCHEDULE
-// ======================================================
 
 model LoadSheddingSchedule {
   id             String         @id @default(uuid())

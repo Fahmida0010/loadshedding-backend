@@ -277,9 +277,9 @@ router.get("/audit-logs", auth("ADMIN"), AdminController.getAuditLogs);
  *         description: User not found
  */
 router.patch(
-    "/users/:id/status",
-    auth("ADMIN"),
-    validateRequest(AdminValidation.updateUserStatusSchema),
-    AdminController.updateUserStatus,
+	"/users/:id/status",
+	auth("ADMIN"),
+	validateRequest(AdminValidation.updateUserStatusSchema),
+	AdminController.updateUserStatus,
 );
 export const AdminRoutes = router;

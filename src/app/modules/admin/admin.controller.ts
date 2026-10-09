@@ -5,7 +5,6 @@ import type { IAuditLogQuery, IUserQuery } from "./admin.interface";
 import { AdminService } from "./admin.service";
 import httpStatus from "http-status";
 
-
 const getAllUsers: RequestHandler = catchAsync(async (req, res) => {
 	const result = await AdminService.getAllUsers(req.query as IUserQuery);
 
@@ -63,18 +62,18 @@ const getAuditLogs: RequestHandler = catchAsync(async (req, res) => {
 });
 
 const updateUserStatus = catchAsync(async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const { status } = req.body;
-  const adminId = req.user?.id; // বর্তমান লগইন করা এডমিনের আইডি (যদি সেলফ-ব্লক রোধ করতে চান)
+	const { id } = req.params;
+	const { status } = req.body;
+	const adminId = req.user?.id; // বর্তমান লগইন করা এডমিনের আইডি (যদি সেলফ-ব্লক রোধ করতে চান)
 
-  const result = await AdminService.updateUserStatusIntoDB(id, status, adminId);
+	const result = await AdminService.updateUserStatusIntoDB(id, status, adminId);
 
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: `User status updated to ${status} successfully`,
-    data: result,
-  });
+	sendResponse(res, {
+		statusCode: httpStatus.OK,
+		success: true,
+		message: `User status updated to ${status} successfully`,
+		data: result,
+	});
 });
 
 export const AdminController = {
@@ -82,5 +81,5 @@ export const AdminController = {
 	updateUserRole,
 	getDashboardStats,
 	getAuditLogs,
-	updateUserStatus
+	updateUserStatus,
 };

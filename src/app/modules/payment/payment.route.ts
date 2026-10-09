@@ -129,9 +129,9 @@ router.get(
  *         description: List of payments retrieved successfully
  */
 router.get(
-    "/",
-    auth(UserRole.ADMIN), // শুধুমাত্র অ্যাডমিন দেখতে পারবে
-    PaymentController.getAllPayments // আপনার কন্ট্রোলারে এই ফাংশনটি থাকতে হবে
+	"/",
+	auth(UserRole.ADMIN), // শুধুমাত্র অ্যাডমিন দেখতে পারবে
+	PaymentController.getAllPayments, // আপনার কন্ট্রোলারে এই ফাংশনটি থাকতে হবে
 );
 
 export const PaymentRoutes = router;

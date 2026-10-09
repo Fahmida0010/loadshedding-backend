@@ -11,7 +11,6 @@ import { ScheduleRoutes } from "../modules/schedule/schedule.route";
 import { SubstationRoutes } from "../modules/substation/substation.route";
 import { BillRoutes } from "../modules/bill/bill.route";
 
-
 const router = Router();
 
 const moduleRoutes = [
@@ -59,7 +58,6 @@ const moduleRoutes = [
 		path: "/bills",
 		route: BillRoutes,
 	},
-	
 ];
 
 moduleRoutes.forEach(({ path, route }) => {

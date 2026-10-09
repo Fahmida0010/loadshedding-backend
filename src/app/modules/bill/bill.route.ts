@@ -55,7 +55,7 @@ const router = Router();
  *         updatedAt:
  *           type: string
  *           format: date-time
- * 
+ *
  *     CreateBill:
  *       type: object
  *       required:
@@ -105,7 +105,7 @@ const router = Router();
  *         description: Invalid request data
  *       403:
  *         description: Admin access required
- * 
+ *
  *   get:
  *     tags:
  *       - Bills
@@ -148,17 +148,13 @@ const router = Router();
  *         description: Admin access required
  */
 router.post(
-  "/",
-  auth(UserRole.ADMIN),
-  validateRequest(BillValidation.createBillSchema),
-  BillController.createBill
+	"/",
+	auth(UserRole.ADMIN),
+	validateRequest(BillValidation.createBillSchema),
+	BillController.createBill,
 );
 
-router.get(
-  "/",
-  auth(UserRole.ADMIN),
-  BillController.getAllBills
-);
+router.get("/", auth(UserRole.ADMIN), BillController.getAllBills);
 
 /**
  * @openapi
@@ -195,11 +191,7 @@ router.get(
  *       403:
  *         description: Customer access required
  */
-router.get(
-  "/my-bills",
-  auth(UserRole.CUSTOMER),
-  BillController.getMyBills
-);
+router.get("/my-bills", auth(UserRole.CUSTOMER), BillController.getMyBills);
 
 /**
  * @openapi
@@ -226,9 +218,9 @@ router.get(
  *         description: Bill not found
  */
 router.get(
-  "/:id",
-  auth(UserRole.ADMIN, UserRole.CUSTOMER),
-  BillController.getBillById
+	"/:id",
+	auth(UserRole.ADMIN, UserRole.CUSTOMER),
+	BillController.getBillById,
 );
 
 export const BillRoutes = router;

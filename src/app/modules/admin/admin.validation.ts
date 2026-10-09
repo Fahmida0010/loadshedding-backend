@@ -7,11 +7,11 @@ const updateUserRoleSchema = z.object({
 });
 
 const updateUserStatusSchema = z.object({
-  body: z.object({
-    status: z.enum(['ACTIVE', 'INACTIVE', 'BLOCKED'], {
-      required_error: 'Status is required',
-    }),
-  }),
+	body: z.object({
+		status: z.enum(["ACTIVE", "INACTIVE", "BLOCKED"], {
+			required_error: "Status is required",
+		}),
+	}),
 });
 export const AdminValidation = {
 	updateUserRoleSchema,

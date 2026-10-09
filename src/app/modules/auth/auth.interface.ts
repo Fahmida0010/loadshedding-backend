@@ -14,7 +14,6 @@ export interface ILoginUser {
 	password: string;
 }
 
-
 export interface IUpdateProfile {
 	name?: string;
 	phone?: string | null;

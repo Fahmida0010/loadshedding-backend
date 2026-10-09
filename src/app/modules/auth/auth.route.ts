@@ -7,7 +7,6 @@ import cloudinaryUpload from "../../middlewares/cloudinaryUpload";
 
 const router = Router();
 
-
 /**
  * @openapi
  * tags:
@@ -243,7 +242,7 @@ router.get(
 router.patch(
 	"/me",
 	auth("ADMIN", "TECHNICIAN", "CUSTOMER"),
-	cloudinaryUpload.single('profileImage'),
+	cloudinaryUpload.single("profileImage"),
 	validateRequest(AuthValidation.updateProfileValidationSchema),
 	AuthController.updateProfile,
 );

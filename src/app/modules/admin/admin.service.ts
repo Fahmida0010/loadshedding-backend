@@ -527,36 +527,43 @@ const getAuditLogs = async (query: IAuditLogQuery) => {
 	};
 };
 
-const updateUserStatusIntoDB = async (userId: string, status: string, adminId?: string) => {
-  // নিজের অ্যাকাউন্ট নিজেই ব্লক করা থেকে বিরত রাখতে চাইলে:
-  if (adminId === userId) {
-    throw new ApiError(httpStatus.BAD_REQUEST, "You cannot block your own account!");
-  }
+const updateUserStatusIntoDB = async (
+	userId: string,
+	status: string,
+	adminId?: string,
+) => {
+	// নিজের অ্যাকাউন্ট নিজেই ব্লক করা থেকে বিরত রাখতে চাইলে:
+	if (adminId === userId) {
+		throw new ApiError(
+			httpStatus.BAD_REQUEST,
+			"You cannot block your own account!",
+		);
+	}
 
-  // ইউজার ডাটাবেজে আছে কিনা চেক করা
-  const isUserExist = await prisma.user.findUnique({
-    where: { id: userId },
-  });
+	// ইউজার ডাটাবেজে আছে কিনা চেক করা
+	const isUserExist = await prisma.user.findUnique({
+		where: { id: userId },
+	});
 
-  if (!isUserExist) {
-    throw new ApiError(httpStatus.NOT_FOUND, "User not found!");
-  }
+	if (!isUserExist) {
+		throw new ApiError(httpStatus.NOT_FOUND, "User not found!");
+	}
 
-  // স্ট্যাটাস আপডেট করা
-  const updatedUser = await prisma.user.update({
-    where: { id: userId },
-    data: { status },
-    select: {
-      id: true,
-      name: true,
-      email: true,
-      role: true,
-      status: true,
-      updatedAt: true,
-    }
-  });
+	// স্ট্যাটাস আপডেট করা
+	const updatedUser = await prisma.user.update({
+		where: { id: userId },
+		data: { status },
+		select: {
+			id: true,
+			name: true,
+			email: true,
+			role: true,
+			status: true,
+			updatedAt: true,
+		},
+	});
 
-  return updatedUser;
+	return updatedUser;
 };
 
 export const AdminService = {

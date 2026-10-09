@@ -113,12 +113,10 @@ const apiLimiter = rateLimit({
 	},
 });
 
-
-app.use('/uploads', express.static(path.join(process.cwd(), 'public/uploads')));
+app.use("/uploads", express.static(path.join(process.cwd(), "public/uploads")));
 
 app.use("/api/v1", apiLimiter);
 app.use("/api/v1", routes);
-
 
 app.use(notFound);
 app.use(globalErrorHandler);
